@@ -1,5 +1,7 @@
 <?php
 
+use SubKit\Providers\Stripe\StripeProvider;
+
 return [
 
     /*
@@ -13,7 +15,7 @@ return [
     */
 
     'currency' => [
-        'code'   => env('EASY_SUB_CURRENCY_CODE', 'USD'),
+        'code' => env('EASY_SUB_CURRENCY_CODE', 'USD'),
         'symbol' => env('EASY_SUB_CURRENCY_SYMBOL', '$'),
     ],
 
@@ -28,7 +30,7 @@ return [
     */
 
     'providers' => [
-        'stripe' => \SubKit\Providers\Stripe\StripeProvider::class,
+        'stripe' => StripeProvider::class,
     ],
 
     /*
@@ -53,7 +55,7 @@ return [
 
     'api' => [
         'middleware' => ['api'],
-        'prefix'     => 'api/subkit',
+        'prefix' => 'api/subkit',
     ],
 
 ];

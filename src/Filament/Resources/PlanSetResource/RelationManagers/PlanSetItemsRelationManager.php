@@ -2,8 +2,6 @@
 
 namespace SubKit\Filament\Resources\PlanSetResource\RelationManagers;
 
-use SubKit\Models\Plan;
-use SubKit\Models\PlanSetItem;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -15,6 +13,8 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use SubKit\Models\Plan;
+use SubKit\Models\PlanSetItem;
 
 class PlanSetItemsRelationManager extends RelationManager
 {

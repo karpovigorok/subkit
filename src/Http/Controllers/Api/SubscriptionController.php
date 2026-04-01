@@ -2,10 +2,10 @@
 
 namespace SubKit\Http\Controllers\Api;
 
-use SubKit\Services\SubscriptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use SubKit\Services\SubscriptionService;
 
 class SubscriptionController extends Controller
 {

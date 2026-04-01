@@ -2,9 +2,9 @@
 
 namespace SubKit\Filament\Resources\PlanResource\Pages;
 
-use SubKit\Filament\Resources\PlanResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use SubKit\Filament\Resources\PlanResource;
 
 class ListPlans extends ListRecords
 {

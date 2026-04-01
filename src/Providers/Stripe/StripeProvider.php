@@ -2,8 +2,8 @@
 
 namespace SubKit\Providers\Stripe;
 
-use SubKit\Contracts\PaymentProviderContract;
 use Illuminate\Database\Eloquent\Model;
+use SubKit\Contracts\PaymentProviderContract;
 
 class StripeProvider implements PaymentProviderContract
 {
@@ -28,7 +28,7 @@ class StripeProvider implements PaymentProviderContract
 
         return $builder->checkout(array_merge([
             'success_url' => $successUrl,
-            'cancel_url'  => $cancelUrl,
+            'cancel_url' => $cancelUrl,
         ], $options))->url;
     }
 

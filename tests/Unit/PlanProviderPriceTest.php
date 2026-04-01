@@ -14,11 +14,11 @@ class PlanProviderPriceTest extends TestCase
         $i++;
 
         return Plan::create([
-            'code'      => "plan-{$i}",
-            'name'      => "Plan {$i}",
-            'interval'  => 'monthly',
+            'code' => "plan-{$i}",
+            'name' => "Plan {$i}",
+            'interval' => 'monthly',
             'is_active' => true,
-            'version'   => 1,
+            'version' => 1,
         ]);
     }
 
@@ -42,8 +42,8 @@ class PlanProviderPriceTest extends TestCase
         $plan = $this->makePlan();
 
         PlanProviderPrice::create([
-            'plan_id'           => $plan->id,
-            'provider'          => 'stripe',
+            'plan_id' => $plan->id,
+            'provider' => 'stripe',
             'provider_price_id' => '',
         ]);
 
@@ -59,8 +59,8 @@ class PlanProviderPriceTest extends TestCase
         $plan = $this->makePlan();
 
         PlanProviderPrice::create([
-            'plan_id'           => $plan->id,
-            'provider'          => 'stripe',
+            'plan_id' => $plan->id,
+            'provider' => 'stripe',
             'provider_price_id' => 'price_abc123',
         ]);
 
@@ -79,8 +79,8 @@ class PlanProviderPriceTest extends TestCase
         $plan = $this->makePlan();
 
         PlanProviderPrice::create([
-            'plan_id'           => $plan->id,
-            'provider'          => 'stripe',
+            'plan_id' => $plan->id,
+            'provider' => 'stripe',
             'provider_price_id' => 'price_abc123',
         ]);
 
@@ -99,8 +99,8 @@ class PlanProviderPriceTest extends TestCase
         // but providerPrice() should return the valid one if DB order allows it,
         // or at minimum not return the empty one).
         PlanProviderPrice::create([
-            'plan_id'           => $plan->id,
-            'provider'          => 'stripe',
+            'plan_id' => $plan->id,
+            'provider' => 'stripe',
             'provider_price_id' => 'price_valid',
         ]);
 

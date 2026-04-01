@@ -3,23 +3,24 @@
 namespace Tests\Unit;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
+use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Subscription as CashierSubscription;
 use SubKit\Events\SubscriptionActivated;
-use SubKit\Events\SubscriptionCancelScheduled;
 use SubKit\Events\SubscriptionCanceled;
+use SubKit\Events\SubscriptionCancelScheduled;
 use SubKit\Events\SubscriptionCreated;
 use SubKit\Events\SubscriptionPastDue;
 use SubKit\Events\SubscriptionPaused;
 use SubKit\Events\SubscriptionResumed;
 use SubKit\Events\SubscriptionTrialStarted;
 use SubKit\Listeners\WebhookEventDispatcher;
-use Illuminate\Support\Facades\Event;
-use Laravel\Cashier\Events\WebhookHandled;
-use Laravel\Cashier\Subscription as CashierSubscription;
 use Tests\TestCase;
 
 class WebhookEventDispatcherTest extends TestCase
 {
-    private const CUSTOMER_ID     = 'cus_test123';
+    private const CUSTOMER_ID = 'cus_test123';
+
     private const SUBSCRIPTION_ID = 'sub_test456';
 
     // -------------------------------------------------------------------------
@@ -39,7 +40,7 @@ class WebhookEventDispatcherTest extends TestCase
             $data['previous_attributes'] = $previous;
         }
 
-        (new WebhookEventDispatcher())->handle(
+        (new WebhookEventDispatcher)->handle(
             new WebhookHandled(['type' => $type, 'data' => $data])
         );
     }
@@ -52,11 +53,11 @@ class WebhookEventDispatcherTest extends TestCase
     private function createSubscription(User $user, string $status = 'active'): CashierSubscription
     {
         return CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => self::SUBSCRIPTION_ID,
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => self::SUBSCRIPTION_ID,
             'stripe_status' => $status,
-            'stripe_price'  => 'price_test',
+            'stripe_price' => 'price_test',
         ]);
     }
 
@@ -203,7 +204,7 @@ class WebhookEventDispatcherTest extends TestCase
     public function test_event_carries_correct_user_and_subscription(): void
     {
         Event::fake();
-        $user         = $this->createUser();
+        $user = $this->createUser();
         $subscription = $this->createSubscription($user);
 
         $this->dispatch('customer.subscription.deleted', ['status' => 'canceled']);
@@ -281,7 +282,7 @@ class WebhookEventDispatcherTest extends TestCase
         Event::fake();
 
         // Payload without 'customer' key at all
-        (new WebhookEventDispatcher())->handle(
+        (new WebhookEventDispatcher)->handle(
             new WebhookHandled([
                 'type' => 'customer.subscription.deleted',
                 'data' => ['object' => ['id' => self::SUBSCRIPTION_ID, 'status' => 'canceled']],

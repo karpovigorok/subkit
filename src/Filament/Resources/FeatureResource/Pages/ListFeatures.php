@@ -2,9 +2,9 @@
 
 namespace SubKit\Filament\Resources\FeatureResource\Pages;
 
-use SubKit\Filament\Resources\FeatureResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use SubKit\Filament\Resources\FeatureResource;
 
 class ListFeatures extends ListRecords
 {

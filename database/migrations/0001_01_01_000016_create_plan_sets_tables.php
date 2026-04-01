@@ -14,12 +14,12 @@ return new class extends Migration
             $table->string('code', 100)->unique();   // used in <x-subkit::pricing-table set="code" />
             $table->text('description')->nullable();
             $table->string('success_url', 500)->nullable();
-            $table->string('cancel_url',  500)->nullable();
-            $table->string('free_url',    500)->nullable();
-            $table->string('guest_url',   500)->nullable();
+            $table->string('cancel_url', 500)->nullable();
+            $table->string('free_url', 500)->nullable();
+            $table->string('guest_url', 500)->nullable();
             $table->string('subscribe_label', 100)->nullable();
-            $table->string('free_label',      100)->nullable();
-            $table->string('guest_label',     100)->nullable();
+            $table->string('free_label', 100)->nullable();
+            $table->string('guest_label', 100)->nullable();
             $table->boolean('is_active')->default(true);
             $table->string('theme', 50)->default('default');
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Support\Facades\Route;
 use SubKit\Models\PlanSet;
 use SubKit\View\Components\PricingTable;
 use Tests\TestCase;
@@ -22,8 +23,8 @@ class PricingTableUrlPropsTest extends TestCase
         $i++;
 
         return PlanSet::create(array_merge([
-            'name'      => "Set {$i}",
-            'code'      => "set-{$i}",
+            'name' => "Set {$i}",
+            'code' => "set-{$i}",
             'is_active' => true,
         ], $attributes));
     }
@@ -43,8 +44,8 @@ class PricingTableUrlPropsTest extends TestCase
 
     public function test_free_url_route_name_resolved_to_full_url(): void
     {
-        \Illuminate\Support\Facades\Route::get('/register', fn () => '')->name('test.register');
-        \Illuminate\Support\Facades\Route::getRoutes()->refreshNameLookups();
+        Route::get('/register', fn () => '')->name('test.register');
+        Route::getRoutes()->refreshNameLookups();
 
         $set = $this->makeSet(['free_url' => 'test.register']);
 

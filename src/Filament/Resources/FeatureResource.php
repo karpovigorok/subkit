@@ -2,8 +2,6 @@
 
 namespace SubKit\Filament\Resources;
 
-use SubKit\Filament\Resources\FeatureResource\Pages;
-use SubKit\Models\Feature;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -12,6 +10,8 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use SubKit\Filament\Resources\FeatureResource\Pages;
+use SubKit\Models\Feature;
 
 class FeatureResource extends Resource
 {
@@ -103,9 +103,9 @@ class FeatureResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListFeatures::route('/'),
+            'index' => Pages\ListFeatures::route('/'),
             'create' => Pages\CreateFeature::route('/create'),
-            'edit'   => Pages\EditFeature::route('/{record}/edit'),
+            'edit' => Pages\EditFeature::route('/{record}/edit'),
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace SubKit\Filament\Resources\FeatureResource\Pages;
 
-use SubKit\Filament\Resources\FeatureResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use SubKit\Filament\Resources\FeatureResource;
 
 class EditFeature extends EditRecord
 {

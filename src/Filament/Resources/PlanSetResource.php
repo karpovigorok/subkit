@@ -2,14 +2,10 @@
 
 namespace SubKit\Filament\Resources;
 
-use SubKit\Filament\Resources\PlanSetResource\Pages;
-use SubKit\Filament\Resources\PlanSetResource\RelationManagers\PlanSetItemsRelationManager;
-use SubKit\Models\PlanSet;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use SubKit\View\Components\BaseSubscriptionComponent;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,6 +16,10 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use SubKit\Filament\Resources\PlanSetResource\Pages;
+use SubKit\Filament\Resources\PlanSetResource\RelationManagers\PlanSetItemsRelationManager;
+use SubKit\Models\PlanSet;
+use SubKit\View\Components\BaseSubscriptionComponent;
 
 class PlanSetResource extends Resource
 {
@@ -80,57 +80,57 @@ class PlanSetResource extends Resource
                         ->helperText('Optional subtitle shown above the pricing table.'),
                 ]),
 
-        Section::make('Button Overrides')
-            ->description('Override the default button labels for this plan set. Leave blank to use the default translations.')
-            ->columns(3)
-            ->schema([
-                TextInput::make('subscribe_label')
-                    ->label('Subscribe button')
-                    ->maxLength(100)
-                    ->placeholder(__('subkit::messages.buttons.get_started'))
-                    ->helperText('Shown on paid plan cards for authenticated users.'),
+            Section::make('Button Overrides')
+                ->description('Override the default button labels for this plan set. Leave blank to use the default translations.')
+                ->columns(3)
+                ->schema([
+                    TextInput::make('subscribe_label')
+                        ->label('Subscribe button')
+                        ->maxLength(100)
+                        ->placeholder(__('subkit::messages.buttons.get_started'))
+                        ->helperText('Shown on paid plan cards for authenticated users.'),
 
-                TextInput::make('free_label')
-                    ->label('Free plan button')
-                    ->maxLength(100)
-                    ->placeholder(__('subkit::messages.buttons.get_started_free'))
-                    ->helperText('Shown on $0 plan cards for authenticated users.'),
+                    TextInput::make('free_label')
+                        ->label('Free plan button')
+                        ->maxLength(100)
+                        ->placeholder(__('subkit::messages.buttons.get_started_free'))
+                        ->helperText('Shown on $0 plan cards for authenticated users.'),
 
-                TextInput::make('guest_label')
-                    ->label('Guest button')
-                    ->maxLength(100)
-                    ->placeholder(__('subkit::messages.buttons.create_account_to_subscribe'))
-                    ->helperText('Shown to unauthenticated visitors.'),
-            ]),
+                    TextInput::make('guest_label')
+                        ->label('Guest button')
+                        ->maxLength(100)
+                        ->placeholder(__('subkit::messages.buttons.create_account_to_subscribe'))
+                        ->helperText('Shown to unauthenticated visitors.'),
+                ]),
 
-        Section::make('URLs')
-            ->description('All fields accept a route name, a relative path, or a full URL.')
-            ->columns(2)
-            ->schema([
-                TextInput::make('success_url')
-                    ->label('Success URL')
-                    ->maxLength(500)
-                    ->placeholder("'dashboard', '/thanks?utm=fb', or 'https://…'")
-                    ->helperText('Redirect here after a successful checkout.'),
+            Section::make('URLs')
+                ->description('All fields accept a route name, a relative path, or a full URL.')
+                ->columns(2)
+                ->schema([
+                    TextInput::make('success_url')
+                        ->label('Success URL')
+                        ->maxLength(500)
+                        ->placeholder("'dashboard', '/thanks?utm=fb', or 'https://…'")
+                        ->helperText('Redirect here after a successful checkout.'),
 
-                TextInput::make('cancel_url')
-                    ->label('Cancel URL')
-                    ->maxLength(500)
-                    ->placeholder("'pricing', '/pricing', or 'https://…'")
-                    ->helperText('Redirect here when the user cancels checkout.'),
+                    TextInput::make('cancel_url')
+                        ->label('Cancel URL')
+                        ->maxLength(500)
+                        ->placeholder("'pricing', '/pricing', or 'https://…'")
+                        ->helperText('Redirect here when the user cancels checkout.'),
 
-                TextInput::make('free_url')
-                    ->label('Free Plan URL')
-                    ->maxLength(500)
-                    ->placeholder("'register', '/signup', or 'https://…'")
-                    ->helperText('CTA destination for $0 plans (authenticated users).'),
+                    TextInput::make('free_url')
+                        ->label('Free Plan URL')
+                        ->maxLength(500)
+                        ->placeholder("'register', '/signup', or 'https://…'")
+                        ->helperText('CTA destination for $0 plans (authenticated users).'),
 
-                TextInput::make('guest_url')
-                    ->label('Guest URL')
-                    ->maxLength(500)
-                    ->placeholder("'login', '/register', or 'https://…'")
-                    ->helperText('Where unauthenticated visitors are sent. Defaults to /register.'),
-            ]),
+                    TextInput::make('guest_url')
+                        ->label('Guest URL')
+                        ->maxLength(500)
+                        ->placeholder("'login', '/register', or 'https://…'")
+                        ->helperText('Where unauthenticated visitors are sent. Defaults to /register.'),
+                ]),
         ]);
     }
 
@@ -194,10 +194,9 @@ class PlanSetResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPlanSets::route('/'),
+            'index' => Pages\ListPlanSets::route('/'),
             'create' => Pages\CreatePlanSet::route('/create'),
-            'edit'   => Pages\EditPlanSet::route('/{record}/edit'),
+            'edit' => Pages\EditPlanSet::route('/{record}/edit'),
         ];
     }
-
 }

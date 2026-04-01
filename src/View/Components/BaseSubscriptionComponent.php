@@ -18,7 +18,7 @@ abstract class BaseSubscriptionComponent extends Component
     public function render()
     {
         $requested = $this->theme ?? 'default';
-        $themed    = "subkit::themes.{$requested}.{$this->componentName()}";
+        $themed = "subkit::themes.{$requested}.{$this->componentName()}";
 
         if (view()->exists($themed)) {
             return view($themed, $this->getThemeData());
@@ -41,25 +41,25 @@ abstract class BaseSubscriptionComponent extends Component
      */
     public static function availableThemes(): array
     {
-        $packagePath   = realpath(__DIR__ . '/../../../resources/views/themes');
+        $packagePath = realpath(__DIR__.'/../../../resources/views/themes');
         $publishedPath = resource_path('views/vendor/subkit/themes');
 
         $themes = [];
 
         foreach ([$packagePath, $publishedPath] as $basePath) {
-            if (!$basePath || !is_dir($basePath)) {
+            if (! $basePath || ! is_dir($basePath)) {
                 continue;
             }
 
             foreach (new \DirectoryIterator($basePath) as $entry) {
-                if (!$entry->isDir() || $entry->isDot()) {
+                if (! $entry->isDir() || $entry->isDot()) {
                     continue;
                 }
 
                 $name = $entry->getFilename();
 
                 // Contract: folder must contain pricing-table.blade.php
-                if (!file_exists($entry->getPathname() . '/pricing-table.blade.php')) {
+                if (! file_exists($entry->getPathname().'/pricing-table.blade.php')) {
                     continue;
                 }
 

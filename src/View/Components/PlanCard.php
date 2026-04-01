@@ -2,9 +2,9 @@
 
 namespace SubKit\View\Components;
 
-use SubKit\Models\Plan;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use SubKit\Models\Plan;
 
 class PlanCard extends Component
 {

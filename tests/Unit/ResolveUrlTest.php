@@ -2,16 +2,16 @@
 
 namespace Tests\Unit;
 
-use SubKit\View\Components\PricingTable;
 use Illuminate\Support\Facades\Route;
 use ReflectionMethod;
+use SubKit\View\Components\PricingTable;
 use Tests\TestCase;
 
 class ResolveUrlTest extends TestCase
 {
     private function resolveUrl(?string $value, string $fallback = '#'): string
     {
-        $component = new PricingTable();
+        $component = new PricingTable;
 
         $method = new ReflectionMethod(PricingTable::class, 'resolveUrl');
         $method->setAccessible(true);

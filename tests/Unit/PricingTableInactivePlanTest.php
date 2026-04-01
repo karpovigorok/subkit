@@ -19,11 +19,11 @@ class PricingTableInactivePlanTest extends TestCase
         $i++;
 
         return Plan::create([
-            'code'      => "plan-{$i}",
-            'name'      => "Plan {$i}",
-            'interval'  => 'monthly',
+            'code' => "plan-{$i}",
+            'name' => "Plan {$i}",
+            'interval' => 'monthly',
             'is_active' => $isActive,
-            'version'   => 1,
+            'version' => 1,
         ]);
     }
 
@@ -33,8 +33,8 @@ class PricingTableInactivePlanTest extends TestCase
         $j++;
 
         return PlanSet::create([
-            'name'      => "Set {$j}",
-            'code'      => "set-{$j}",
+            'name' => "Set {$j}",
+            'code' => "set-{$j}",
             'is_active' => true,
         ]);
     }
@@ -45,10 +45,10 @@ class PricingTableInactivePlanTest extends TestCase
 
     public function test_inactive_plans_excluded_from_global_list(): void
     {
-        $active   = $this->makePlan(isActive: true);
+        $active = $this->makePlan(isActive: true);
         $inactive = $this->makePlan(isActive: false);
 
-        $component = new PricingTable();
+        $component = new PricingTable;
 
         $ids = $component->plans->pluck('id')->all();
 
@@ -62,11 +62,11 @@ class PricingTableInactivePlanTest extends TestCase
 
     public function test_inactive_plans_excluded_from_set(): void
     {
-        $set      = $this->makeSet();
-        $active   = $this->makePlan(isActive: true);
+        $set = $this->makeSet();
+        $active = $this->makePlan(isActive: true);
         $inactive = $this->makePlan(isActive: false);
 
-        $set->plans()->attach($active->id,   ['sort_order' => 1, 'is_highlighted' => false]);
+        $set->plans()->attach($active->id, ['sort_order' => 1, 'is_highlighted' => false]);
         $set->plans()->attach($inactive->id, ['sort_order' => 2, 'is_highlighted' => false]);
 
         $component = new PricingTable(set: $set->code);
@@ -79,7 +79,7 @@ class PricingTableInactivePlanTest extends TestCase
 
     public function test_only_active_plans_from_set_when_all_inactive(): void
     {
-        $set      = $this->makeSet();
+        $set = $this->makeSet();
         $inactive = $this->makePlan(isActive: false);
 
         $set->plans()->attach($inactive->id, ['sort_order' => 1, 'is_highlighted' => false]);
@@ -95,11 +95,11 @@ class PricingTableInactivePlanTest extends TestCase
 
     public function test_highlighted_map_excludes_inactive_plans(): void
     {
-        $set      = $this->makeSet();
-        $active   = $this->makePlan(isActive: true);
+        $set = $this->makeSet();
+        $active = $this->makePlan(isActive: true);
         $inactive = $this->makePlan(isActive: false);
 
-        $set->plans()->attach($active->id,   ['sort_order' => 1, 'is_highlighted' => true]);
+        $set->plans()->attach($active->id, ['sort_order' => 1, 'is_highlighted' => true]);
         $set->plans()->attach($inactive->id, ['sort_order' => 2, 'is_highlighted' => true]);
 
         $component = new PricingTable(set: $set->code);
@@ -110,7 +110,7 @@ class PricingTableInactivePlanTest extends TestCase
 
     public function test_highlighted_flag_preserved_for_active_plan(): void
     {
-        $set  = $this->makeSet();
+        $set = $this->makeSet();
         $plan = $this->makePlan(isActive: true);
 
         $set->plans()->attach($plan->id, ['sort_order' => 1, 'is_highlighted' => true]);

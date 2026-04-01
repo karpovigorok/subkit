@@ -2,11 +2,12 @@
 
 namespace SubKit\Services;
 
-use SubKit\Models\Plan;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Cashier\Subscription as CashierSubscription;
 use RuntimeException;
+use SubKit\Models\Plan;
 
 class SubscriptionService
 {
@@ -39,12 +40,12 @@ class SubscriptionService
         $user = $this->user($userId ?? throw new RuntimeException('A user ID is required for checkout.'));
 
         return $this->registry->resolve($provider)->createCheckoutSession(
-            user:       $user,
-            priceId:    $providerPrice->provider_price_id,
+            user: $user,
+            priceId: $providerPrice->provider_price_id,
             successUrl: $successUrl,
-            cancelUrl:  $cancelUrl,
-            trialDays:  $plan->trial_days,
-            options:    $options,
+            cancelUrl: $cancelUrl,
+            trialDays: $plan->trial_days,
+            options: $options,
         );
     }
 
@@ -110,7 +111,7 @@ class SubscriptionService
 
     private function user(string $userId): Model
     {
-        $class = config('auth.providers.users.model', \App\Models\User::class);
+        $class = config('auth.providers.users.model', User::class);
 
         return $class::findOrFail($userId);
     }

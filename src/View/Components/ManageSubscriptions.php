@@ -10,8 +10,11 @@ use SubKit\Services\SubscriptionService;
 class ManageSubscriptions extends BaseSubscriptionComponent
 {
     public readonly bool $isGuest;
+
     public readonly Collection $subscriptions;
+
     public readonly array $nextBillingDates;
+
     public readonly array $plans;
 
     public function __construct(
@@ -28,7 +31,7 @@ class ManageSubscriptions extends BaseSubscriptionComponent
 
         $this->subscriptions = $user !== null
             ? $service->forUser((string) $user->id)
-            : new Collection();
+            : new Collection;
 
         $this->nextBillingDates = $this->resolveNextBillingDates();
         $this->plans = $this->resolvePlans();
@@ -42,12 +45,12 @@ class ManageSubscriptions extends BaseSubscriptionComponent
     protected function getThemeData(): array
     {
         return [
-            'theme'            => $this->theme,
-            'isGuest'          => $this->isGuest,
-            'subscriptions'    => $this->subscriptions,
+            'theme' => $this->theme,
+            'isGuest' => $this->isGuest,
+            'subscriptions' => $this->subscriptions,
             'nextBillingDates' => $this->nextBillingDates,
-            'plans'            => $this->plans,
-            'returnUrl'        => $this->returnUrl,
+            'plans' => $this->plans,
+            'returnUrl' => $this->returnUrl,
             'guestRedirectUrl' => $this->guestRedirectUrl,
         ];
     }

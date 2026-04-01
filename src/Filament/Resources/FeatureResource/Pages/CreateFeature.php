@@ -2,8 +2,8 @@
 
 namespace SubKit\Filament\Resources\FeatureResource\Pages;
 
-use SubKit\Filament\Resources\FeatureResource;
 use Filament\Resources\Pages\CreateRecord;
+use SubKit\Filament\Resources\FeatureResource;
 
 class CreateFeature extends CreateRecord
 {

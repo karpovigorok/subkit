@@ -2,12 +2,12 @@
 
 namespace SubKit\Filament;
 
+use Filament\Contracts\Plugin;
+use Filament\Panel;
 use SubKit\Filament\Resources\FeatureResource;
 use SubKit\Filament\Resources\PlanResource;
 use SubKit\Filament\Resources\PlanSetResource;
 use SubKit\Filament\Resources\SubscriberResource;
-use Filament\Contracts\Plugin;
-use Filament\Panel;
 
 class SubKitPlugin implements Plugin
 {
