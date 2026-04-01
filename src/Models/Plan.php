@@ -21,7 +21,6 @@ use SubKit\Enums\SubscriptionInterval;
  * @property array|null $metadata
  * @property-read string $formatted_price
  */
-
 class Plan extends Model
 {
     protected $table = 'subkit_plans';
