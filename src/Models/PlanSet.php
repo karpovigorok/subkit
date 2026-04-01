@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PlanSet extends Model
 {
-
     protected $table = 'subkit_plan_sets';
+
     protected $fillable = [
         'name',
         'code',

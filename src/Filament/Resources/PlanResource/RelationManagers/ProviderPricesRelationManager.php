@@ -7,11 +7,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Actions\CreateAction;
-use Illuminate\Validation\Rules\Unique;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Validation\Rules\Unique;
 
 class ProviderPricesRelationManager extends RelationManager
 {
@@ -33,8 +33,7 @@ class ProviderPricesRelationManager extends RelationManager
                     table: 'subkit_plan_provider_prices',
                     column: 'provider',
                     ignoreRecord: true,
-                    modifyRuleUsing: fn (Unique $rule): Unique =>
-                        $rule->where('plan_id', $this->getOwnerRecord()->id),
+                    modifyRuleUsing: fn (Unique $rule): Unique => $rule->where('plan_id', $this->getOwnerRecord()->id),
                 )
                 ->validationMessages(['unique' => 'This provider already has a price assigned to this plan.'])
                 ->helperText('Select the payment provider.'),

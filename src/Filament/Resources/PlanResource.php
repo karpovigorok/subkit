@@ -2,12 +2,6 @@
 
 namespace SubKit\Filament\Resources;
 
-use SubKit\Enums\SubscriptionInterval;
-use SubKit\Filament\Resources\PlanResource\Pages;
-use SubKit\Filament\Resources\PlanResource\RelationManagers\FeaturesRelationManager;
-use SubKit\Filament\Resources\PlanResource\RelationManagers\ProviderPricesRelationManager;
-use SubKit\Models\Plan;
-use Illuminate\Support\Str;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -20,6 +14,13 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Laravel\Cashier\Subscription;
+use SubKit\Enums\SubscriptionInterval;
+use SubKit\Filament\Resources\PlanResource\Pages;
+use SubKit\Filament\Resources\PlanResource\RelationManagers\FeaturesRelationManager;
+use SubKit\Filament\Resources\PlanResource\RelationManagers\ProviderPricesRelationManager;
+use SubKit\Models\Plan;
 
 class PlanResource extends Resource
 {
@@ -64,7 +65,7 @@ class PlanResource extends Resource
                         ->label('Billing interval')
                         ->options([
                             SubscriptionInterval::Monthly->value => 'Monthly',
-                            SubscriptionInterval::Yearly->value  => 'Yearly',
+                            SubscriptionInterval::Yearly->value => 'Yearly',
                         ])
                         ->required(),
 
@@ -139,7 +140,7 @@ class PlanResource extends Resource
                 TextColumn::make('price')
                     ->label('Price')
                     ->formatStateUsing(fn (?int $state): string => $state
-                        ? config('subkit.currency.symbol', '$') . number_format($state / 100, 2)
+                        ? config('subkit.currency.symbol', '$').number_format($state / 100, 2)
                         : 'Free'
                     ),
 
@@ -152,11 +153,11 @@ class PlanResource extends Resource
                     ->label('Active')
                     ->boolean(),
 
-//                TextColumn::make('providerPrices_count')
-//                    ->label('Providers')
-//                    ->counts('providerPrices')
-//                    ->badge()
-//                    ->color('success'),
+                //                TextColumn::make('providerPrices_count')
+                //                    ->label('Providers')
+                //                    ->counts('providerPrices')
+                //                    ->badge()
+                //                    ->color('success'),
 
                 TextColumn::make('created_at')
                     ->label('Created')
@@ -167,7 +168,7 @@ class PlanResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make()
-                    ->visible(fn (Plan $record): bool => \Laravel\Cashier\Subscription::whereIn(
+                    ->visible(fn (Plan $record): bool => Subscription::whereIn(
                         'stripe_price',
                         $record->providerPrices()->pluck('provider_price_id')
                     )->doesntExist()),
@@ -190,9 +191,9 @@ class PlanResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListPlans::route('/'),
+            'index' => Pages\ListPlans::route('/'),
             'create' => Pages\CreatePlan::route('/create'),
-            'edit'   => Pages\EditPlan::route('/{record}/edit'),
+            'edit' => Pages\EditPlan::route('/{record}/edit'),
         ];
     }
 }

@@ -2,8 +2,8 @@
 
 namespace SubKit\Filament\Resources\SubscriberResource\Pages;
 
-use SubKit\Filament\Resources\SubscriberResource;
 use Filament\Resources\Pages\ListRecords;
+use SubKit\Filament\Resources\SubscriberResource;
 
 class ListSubscribers extends ListRecords
 {

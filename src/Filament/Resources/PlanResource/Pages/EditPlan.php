@@ -2,9 +2,10 @@
 
 namespace SubKit\Filament\Resources\PlanResource\Pages;
 
-use SubKit\Filament\Resources\PlanResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Laravel\Cashier\Subscription;
+use SubKit\Filament\Resources\PlanResource;
 
 class EditPlan extends EditRecord
 {
@@ -14,7 +15,7 @@ class EditPlan extends EditRecord
     {
         return [
             DeleteAction::make()
-                ->visible(fn (): bool => \Laravel\Cashier\Subscription::whereIn(
+                ->visible(fn (): bool => Subscription::whereIn(
                     'stripe_price',
                     $this->record->providerPrices()->pluck('provider_price_id')
                 )->doesntExist()),

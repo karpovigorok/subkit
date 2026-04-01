@@ -1,12 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use SubKit\Http\Controllers\Api\CheckoutController;
 use SubKit\Http\Controllers\Api\SubscriptionController;
 use SubKit\Http\Controllers\BillingPortalController;
 use SubKit\Http\Controllers\CheckoutRedirectController;
 use SubKit\Http\Controllers\ManageSubscriptionsController;
 use SubKit\Http\Controllers\PlanSetPreviewController;
-use Illuminate\Support\Facades\Route;
 
 // ─── Web: pricing table + manage-subscriptions component actions ──────────────
 Route::middleware(config('subkit.web.middleware', ['web']))

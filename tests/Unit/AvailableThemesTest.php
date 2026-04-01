@@ -44,8 +44,8 @@ class AvailableThemesTest extends TestCase
 
     public function test_folder_without_pricing_table_is_excluded(): void
     {
-        $themesDir = realpath(__DIR__ . '/../../resources/views/themes');
-        $emptyDir  = $themesDir . '/empty_theme_test';
+        $themesDir = realpath(__DIR__.'/../../resources/views/themes');
+        $emptyDir = $themesDir.'/empty_theme_test';
 
         // Create a folder with no pricing-table.blade.php
         mkdir($emptyDir, 0755, true);
@@ -60,18 +60,18 @@ class AvailableThemesTest extends TestCase
 
     public function test_folder_with_pricing_table_is_included(): void
     {
-        $themesDir    = realpath(__DIR__ . '/../../resources/views/themes');
-        $testThemeDir = $themesDir . '/test_theme_fixture';
+        $themesDir = realpath(__DIR__.'/../../resources/views/themes');
+        $testThemeDir = $themesDir.'/test_theme_fixture';
 
         mkdir($testThemeDir, 0755, true);
-        file_put_contents($testThemeDir . '/pricing-table.blade.php', '{{-- fixture --}}');
+        file_put_contents($testThemeDir.'/pricing-table.blade.php', '{{-- fixture --}}');
 
         try {
             $themes = BaseSubscriptionComponent::availableThemes();
             $this->assertArrayHasKey('test_theme_fixture', $themes);
             $this->assertSame('Test Theme Fixture', $themes['test_theme_fixture']);
         } finally {
-            unlink($testThemeDir . '/pricing-table.blade.php');
+            unlink($testThemeDir.'/pricing-table.blade.php');
             rmdir($testThemeDir);
         }
     }
@@ -85,7 +85,7 @@ class AvailableThemesTest extends TestCase
         $publishedDir = resource_path('views/vendor/subkit/themes/default');
 
         mkdir($publishedDir, 0755, true);
-        file_put_contents($publishedDir . '/pricing-table.blade.php', '{{-- published override --}}');
+        file_put_contents($publishedDir.'/pricing-table.blade.php', '{{-- published override --}}');
 
         try {
             $themes = BaseSubscriptionComponent::availableThemes();
@@ -93,7 +93,7 @@ class AvailableThemesTest extends TestCase
             $this->assertArrayHasKey('default', $themes);
             $this->assertCount(count(array_unique(array_keys($themes))), $themes, 'No duplicate keys');
         } finally {
-            unlink($publishedDir . '/pricing-table.blade.php');
+            unlink($publishedDir.'/pricing-table.blade.php');
             rmdir($publishedDir);
             // Clean up parent dirs only if empty
             @rmdir(resource_path('views/vendor/subkit/themes'));
@@ -114,14 +114,14 @@ class AvailableThemesTest extends TestCase
     {
         $publishedDir = resource_path('views/vendor/subkit/themes/brand_new_theme');
         mkdir($publishedDir, 0755, true);
-        file_put_contents($publishedDir . '/pricing-table.blade.php', '{{-- fixture --}}');
+        file_put_contents($publishedDir.'/pricing-table.blade.php', '{{-- fixture --}}');
 
         try {
             $themes = BaseSubscriptionComponent::availableThemes();
             $this->assertArrayHasKey('brand_new_theme', $themes);
             $this->assertSame('Brand New Theme', $themes['brand_new_theme']);
         } finally {
-            unlink($publishedDir . '/pricing-table.blade.php');
+            unlink($publishedDir.'/pricing-table.blade.php');
             rmdir($publishedDir);
             @rmdir(resource_path('views/vendor/subkit/themes'));
             @rmdir(resource_path('views/vendor/subkit'));
@@ -135,9 +135,17 @@ class AvailableThemesTest extends TestCase
 
     public function test_unknown_theme_falls_back_to_default_theme_name_in_data(): void
     {
-        $component = new class('non_existent_theme') extends BaseSubscriptionComponent {
-            protected function componentName(): string { return 'pricing-table'; }
-            protected function getThemeData(): array   { return ['theme' => $this->theme ?? 'default']; }
+        $component = new class('non_existent_theme') extends BaseSubscriptionComponent
+        {
+            protected function componentName(): string
+            {
+                return 'pricing-table';
+            }
+
+            protected function getThemeData(): array
+            {
+                return ['theme' => $this->theme ?? 'default'];
+            }
         };
 
         $view = $component->render();

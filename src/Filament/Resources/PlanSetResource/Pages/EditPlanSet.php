@@ -2,10 +2,10 @@
 
 namespace SubKit\Filament\Resources\PlanSetResource\Pages;
 
-use SubKit\Filament\Resources\PlanSetResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use SubKit\Filament\Resources\PlanSetResource;
 
 class EditPlanSet extends EditRecord
 {

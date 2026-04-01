@@ -2,8 +2,8 @@
 
 namespace SubKit\Services;
 
-use SubKit\Contracts\PaymentProviderContract;
 use RuntimeException;
+use SubKit\Contracts\PaymentProviderContract;
 
 class ProviderRegistry
 {

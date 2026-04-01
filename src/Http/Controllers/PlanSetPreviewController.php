@@ -2,8 +2,8 @@
 
 namespace SubKit\Http\Controllers;
 
-use SubKit\Models\PlanSet;
 use Illuminate\Http\Response;
+use SubKit\Models\PlanSet;
 
 class PlanSetPreviewController
 {

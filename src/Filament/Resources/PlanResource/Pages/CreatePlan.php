@@ -2,10 +2,10 @@
 
 namespace SubKit\Filament\Resources\PlanResource\Pages;
 
-use SubKit\Filament\Resources\PlanResource;
-use SubKit\Models\Plan;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
+use SubKit\Filament\Resources\PlanResource;
+use SubKit\Models\Plan;
 
 class CreatePlan extends CreateRecord
 {
@@ -15,10 +15,10 @@ class CreatePlan extends CreateRecord
     {
         $base = Str::slug($data['name'] ?? '', '_');
         $code = $base ?: (string) Str::uuid();
-        $i    = 2;
+        $i = 2;
 
         while (Plan::where('code', $code)->exists()) {
-            $code = $base . '_' . $i++;
+            $code = $base.'_'.$i++;
         }
 
         $data['code'] = $code;

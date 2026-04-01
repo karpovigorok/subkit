@@ -2,10 +2,10 @@
 
 namespace SubKit\View\Components;
 
-use SubKit\Models\Plan;
-use SubKit\Models\PlanSet;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Route;
+use SubKit\Models\Plan;
+use SubKit\Models\PlanSet;
 
 class PricingTable extends BaseSubscriptionComponent
 {
@@ -15,7 +15,7 @@ class PricingTable extends BaseSubscriptionComponent
     /** @var array<int, bool>  plan_id → is_highlighted */
     public array $highlighted;
 
-    /** @var string[]  Unique interval values present in this set, e.g. ['monthly', 'yearly'] */
+    /** @var string[] Unique interval values present in this set, e.g. ['monthly', 'yearly'] */
     public array $intervals;
 
     /** Default selected interval: 'monthly' if available, otherwise first present */
@@ -28,8 +28,11 @@ class PricingTable extends BaseSubscriptionComponent
 
     // Resolved URLs (after prop → DB → fallback priority)
     protected string $resolvedSuccessUrl;
+
     protected string $resolvedCancelUrl;
+
     protected string $resolvedFreeUrl;
+
     protected string $resolvedGuestUrl;
 
     // Resolved button labels (after prop → DB → translation fallback priority)
@@ -53,7 +56,7 @@ class PricingTable extends BaseSubscriptionComponent
                 ->where('is_active', true)
                 ->firstOrFail();
 
-            $this->plans          = $planSet->plans->where('is_active', true)->values();
+            $this->plans = $planSet->plans->where('is_active', true)->values();
             $this->setDescription = $planSet->description;
 
             $this->highlighted = $this->plans
@@ -63,33 +66,33 @@ class PricingTable extends BaseSubscriptionComponent
             parent::__construct($theme ?? $planSet->theme ?? 'default');
 
             $this->resolvedSuccessUrl = $this->resolveUrl($this->successUrl ?: $planSet->success_url);
-            $this->resolvedCancelUrl  = $this->resolveUrl($this->cancelUrl  ?: $planSet->cancel_url);
-            $this->resolvedFreeUrl    = $this->resolveUrl($this->freeUrl    ?: $planSet->free_url);
-            $this->resolvedGuestUrl   = $this->resolveUrl(
+            $this->resolvedCancelUrl = $this->resolveUrl($this->cancelUrl ?: $planSet->cancel_url);
+            $this->resolvedFreeUrl = $this->resolveUrl($this->freeUrl ?: $planSet->free_url);
+            $this->resolvedGuestUrl = $this->resolveUrl(
                 $this->guestRedirectUrl ?: $planSet->guest_url,
                 '/register'
             );
             $this->resolvedLabels = $this->resolveLabels($planSet);
 
-            $this->freeUrl    = $this->resolvedFreeUrl;
+            $this->freeUrl = $this->resolvedFreeUrl;
             $this->successUrl = $this->resolvedSuccessUrl;
-            $this->cancelUrl  = $this->resolvedCancelUrl;
+            $this->cancelUrl = $this->resolvedCancelUrl;
         } else {
-            $this->plans          = Plan::where('is_active', true)->orderBy('id')->get();
-            $this->highlighted    = [];
+            $this->plans = Plan::where('is_active', true)->orderBy('id')->get();
+            $this->highlighted = [];
             $this->setDescription = null;
 
             parent::__construct($theme ?? 'default');
 
             $this->resolvedSuccessUrl = $this->resolveUrl($this->successUrl);
-            $this->resolvedCancelUrl  = $this->resolveUrl($this->cancelUrl);
-            $this->resolvedFreeUrl    = $this->resolveUrl($this->freeUrl);
-            $this->resolvedGuestUrl   = $this->resolveUrl($this->guestRedirectUrl, '/register');
+            $this->resolvedCancelUrl = $this->resolveUrl($this->cancelUrl);
+            $this->resolvedFreeUrl = $this->resolveUrl($this->freeUrl);
+            $this->resolvedGuestUrl = $this->resolveUrl($this->guestRedirectUrl, '/register');
             $this->resolvedLabels = $this->resolveLabels(null);
 
-            $this->freeUrl    = $this->resolvedFreeUrl;
+            $this->freeUrl = $this->resolvedFreeUrl;
             $this->successUrl = $this->resolvedSuccessUrl;
-            $this->cancelUrl  = $this->resolvedCancelUrl;
+            $this->cancelUrl = $this->resolvedCancelUrl;
         }
 
         $this->plans->load('features');
@@ -143,11 +146,11 @@ class PricingTable extends BaseSubscriptionComponent
     protected function resolveLabels(?PlanSet $planSet): array
     {
         return [
-            'monthly'   => __('subkit::messages.pricing.toggle_monthly'),
-            'yearly'    => __('subkit::messages.pricing.toggle_yearly'),
+            'monthly' => __('subkit::messages.pricing.toggle_monthly'),
+            'yearly' => __('subkit::messages.pricing.toggle_yearly'),
             'subscribe' => $this->subscribeLabel ?? $planSet?->subscribe_label ?? __('subkit::messages.buttons.get_started'),
-            'free'      => $this->freeLabel      ?? $planSet?->free_label      ?? __('subkit::messages.buttons.get_started_free'),
-            'guest'     => $this->guestLabel     ?? $planSet?->guest_label     ?? __('subkit::messages.buttons.create_account_to_subscribe'),
+            'free' => $this->freeLabel ?? $planSet?->free_label ?? __('subkit::messages.buttons.get_started_free'),
+            'guest' => $this->guestLabel ?? $planSet?->guest_label ?? __('subkit::messages.buttons.create_account_to_subscribe'),
         ];
     }
 
@@ -159,20 +162,20 @@ class PricingTable extends BaseSubscriptionComponent
     protected function getThemeData(): array
     {
         return [
-            'theme'           => $this->theme,
-            'plans'           => $this->plans,
+            'theme' => $this->theme,
+            'plans' => $this->plans,
             'plansByInterval' => $this->plansByInterval,
-            'intervals'       => $this->intervals,
+            'intervals' => $this->intervals,
             'defaultInterval' => $this->defaultInterval,
-            'highlighted'     => $this->highlighted,
-            'setDescription'  => $this->setDescription,
-            'companyId'        => $this->companyId,
-            'successUrl'       => $this->resolvedSuccessUrl,
-            'cancelUrl'        => $this->resolvedCancelUrl,
-            'freeUrl'          => $this->resolvedFreeUrl,
-            'guestUrl'         => $this->resolvedGuestUrl,
-            'provider'         => $this->provider,
-            'labels'           => $this->resolvedLabels,
+            'highlighted' => $this->highlighted,
+            'setDescription' => $this->setDescription,
+            'companyId' => $this->companyId,
+            'successUrl' => $this->resolvedSuccessUrl,
+            'cancelUrl' => $this->resolvedCancelUrl,
+            'freeUrl' => $this->resolvedFreeUrl,
+            'guestUrl' => $this->resolvedGuestUrl,
+            'provider' => $this->provider,
+            'labels' => $this->resolvedLabels,
         ];
     }
 }

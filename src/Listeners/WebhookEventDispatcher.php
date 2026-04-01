@@ -2,17 +2,18 @@
 
 namespace SubKit\Listeners;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Subscription as CashierSubscription;
 use SubKit\Events\SubscriptionActivated;
-use SubKit\Events\SubscriptionCancelScheduled;
 use SubKit\Events\SubscriptionCanceled;
+use SubKit\Events\SubscriptionCancelScheduled;
 use SubKit\Events\SubscriptionCreated;
 use SubKit\Events\SubscriptionPastDue;
 use SubKit\Events\SubscriptionPaused;
 use SubKit\Events\SubscriptionResumed;
 use SubKit\Events\SubscriptionTrialStarted;
-use Illuminate\Database\Eloquent\Model;
-use Laravel\Cashier\Events\WebhookHandled;
-use Laravel\Cashier\Subscription as CashierSubscription;
 
 class WebhookEventDispatcher
 {
@@ -31,7 +32,7 @@ class WebhookEventDispatcher
             'customer.subscription.created' => $this->handleCreated($user, $subscription, $payload),
             'customer.subscription.updated' => $this->handleUpdated($user, $subscription, $payload),
             'customer.subscription.deleted' => SubscriptionCanceled::dispatch($user, $subscription, $payload),
-            default                         => null,
+            default => null,
         };
     }
 
@@ -46,26 +47,26 @@ class WebhookEventDispatcher
 
     private function handleUpdated(Model $user, ?CashierSubscription $subscription, array $payload): void
     {
-        $current  = $payload['data']['object'];
+        $current = $payload['data']['object'];
         $previous = $payload['data']['previous_attributes'] ?? [];
 
         // Status transition
-        $newStatus  = $current['status'] ?? null;
+        $newStatus = $current['status'] ?? null;
         $prevStatus = $previous['status'] ?? null;
 
         if ($prevStatus !== null && $prevStatus !== $newStatus) {
             match ($newStatus) {
-                'active'   => SubscriptionActivated::dispatch($user, $subscription, $payload),
+                'active' => SubscriptionActivated::dispatch($user, $subscription, $payload),
                 'past_due' => SubscriptionPastDue::dispatch($user, $subscription, $payload),
-                'paused'   => SubscriptionPaused::dispatch($user, $subscription, $payload),
-                default    => null,
+                'paused' => SubscriptionPaused::dispatch($user, $subscription, $payload),
+                default => null,
             };
         }
 
         // cancel_at_period_end transition
         if (array_key_exists('cancel_at_period_end', $previous)) {
             $wasScheduled = (bool) $previous['cancel_at_period_end'];
-            $isScheduled  = (bool) ($current['cancel_at_period_end'] ?? false);
+            $isScheduled = (bool) ($current['cancel_at_period_end'] ?? false);
 
             if (! $wasScheduled && $isScheduled) {
                 SubscriptionCancelScheduled::dispatch($user, $subscription, $payload);
@@ -82,7 +83,7 @@ class WebhookEventDispatcher
             return null;
         }
 
-        $userModel = config('auth.providers.users.model', \App\Models\User::class);
+        $userModel = config('auth.providers.users.model', User::class);
 
         return $userModel::where('stripe_id', $stripeCustomerId)->first();
     }

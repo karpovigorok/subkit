@@ -2,8 +2,8 @@
 
 namespace SubKit\Facades;
 
-use SubKit\Services\SubscriptionService;
 use Illuminate\Support\Facades\Facade;
+use SubKit\Services\SubscriptionService;
 
 /**
  * @method static string checkout(string $planCode, ?string $userId, string $successUrl, string $cancelUrl, string $provider = 'stripe', array $options = [])

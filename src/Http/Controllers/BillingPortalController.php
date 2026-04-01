@@ -2,10 +2,10 @@
 
 namespace SubKit\Http\Controllers;
 
-use SubKit\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use SubKit\Services\SubscriptionService;
 
 class BillingPortalController extends Controller
 {
@@ -17,12 +17,12 @@ class BillingPortalController extends Controller
     {
         $data = $request->validate([
             'subscription_id' => ['required', 'integer'],
-            'return_url'      => ['required', 'string'],
+            'return_url' => ['required', 'string'],
         ]);
 
         $url = $this->service->billingPortal(
             subscriptionId: (int) $data['subscription_id'],
-            returnUrl:      $data['return_url'],
+            returnUrl: $data['return_url'],
         );
 
         return redirect()->away($url);

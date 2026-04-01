@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
+use ReflectionMethod;
 use SubKit\Models\PlanSet;
 use SubKit\View\Components\PricingTable;
-use ReflectionMethod;
 use Tests\TestCase;
 
 class ResolveLabelsTest extends TestCase
@@ -17,8 +17,8 @@ class ResolveLabelsTest extends TestCase
     {
         $component = new PricingTable(
             subscribeLabel: $props['subscribeLabel'] ?? null,
-            freeLabel:      $props['freeLabel']      ?? null,
-            guestLabel:     $props['guestLabel']     ?? null,
+            freeLabel: $props['freeLabel'] ?? null,
+            guestLabel: $props['guestLabel'] ?? null,
         );
 
         $method = new ReflectionMethod(PricingTable::class, 'resolveLabels');
@@ -33,8 +33,8 @@ class ResolveLabelsTest extends TestCase
         $i++;
 
         return PlanSet::create(array_merge([
-            'name'      => "Set {$i}",
-            'code'      => "set-{$i}",
+            'name' => "Set {$i}",
+            'code' => "set-{$i}",
             'is_active' => true,
         ], $overrides));
     }
@@ -47,8 +47,8 @@ class ResolveLabelsTest extends TestCase
     {
         $labels = $this->resolveLabels(null);
 
-        $this->assertEquals(__('subkit::messages.buttons.get_started'),               $labels['subscribe']);
-        $this->assertEquals(__('subkit::messages.buttons.get_started_free'),           $labels['free']);
+        $this->assertEquals(__('subkit::messages.buttons.get_started'), $labels['subscribe']);
+        $this->assertEquals(__('subkit::messages.buttons.get_started_free'), $labels['free']);
         $this->assertEquals(__('subkit::messages.buttons.create_account_to_subscribe'), $labels['guest']);
     }
 
@@ -57,7 +57,7 @@ class ResolveLabelsTest extends TestCase
         $labels = $this->resolveLabels(null);
 
         $this->assertEquals(__('subkit::messages.pricing.toggle_monthly'), $labels['monthly']);
-        $this->assertEquals(__('subkit::messages.pricing.toggle_yearly'),  $labels['yearly']);
+        $this->assertEquals(__('subkit::messages.pricing.toggle_yearly'), $labels['yearly']);
     }
 
     // -------------------------------------------------------------------------
@@ -95,14 +95,14 @@ class ResolveLabelsTest extends TestCase
     {
         $set = $this->makeSet([
             'subscribe_label' => null,
-            'free_label'      => null,
-            'guest_label'     => null,
+            'free_label' => null,
+            'guest_label' => null,
         ]);
 
         $labels = $this->resolveLabels($set);
 
-        $this->assertEquals(__('subkit::messages.buttons.get_started'),                $labels['subscribe']);
-        $this->assertEquals(__('subkit::messages.buttons.get_started_free'),            $labels['free']);
+        $this->assertEquals(__('subkit::messages.buttons.get_started'), $labels['subscribe']);
+        $this->assertEquals(__('subkit::messages.buttons.get_started_free'), $labels['free']);
         $this->assertEquals(__('subkit::messages.buttons.create_account_to_subscribe'), $labels['guest']);
     }
 
@@ -123,31 +123,31 @@ class ResolveLabelsTest extends TestCase
     {
         $labels = $this->resolveLabels(null, [
             'subscribeLabel' => 'Buy Now',
-            'freeLabel'      => 'Start Free',
-            'guestLabel'     => 'Join Us',
+            'freeLabel' => 'Start Free',
+            'guestLabel' => 'Join Us',
         ]);
 
-        $this->assertEquals('Buy Now',    $labels['subscribe']);
+        $this->assertEquals('Buy Now', $labels['subscribe']);
         $this->assertEquals('Start Free', $labels['free']);
-        $this->assertEquals('Join Us',    $labels['guest']);
+        $this->assertEquals('Join Us', $labels['guest']);
     }
 
     public function test_prop_wins_over_both_db_and_translation(): void
     {
         $set = $this->makeSet([
             'subscribe_label' => 'DB Subscribe',
-            'free_label'      => 'DB Free',
-            'guest_label'     => 'DB Guest',
+            'free_label' => 'DB Free',
+            'guest_label' => 'DB Guest',
         ]);
 
         $labels = $this->resolveLabels($set, [
             'subscribeLabel' => 'Prop Subscribe',
-            'freeLabel'      => 'Prop Free',
-            'guestLabel'     => 'Prop Guest',
+            'freeLabel' => 'Prop Free',
+            'guestLabel' => 'Prop Guest',
         ]);
 
         $this->assertEquals('Prop Subscribe', $labels['subscribe']);
-        $this->assertEquals('Prop Free',      $labels['free']);
-        $this->assertEquals('Prop Guest',     $labels['guest']);
+        $this->assertEquals('Prop Free', $labels['free']);
+        $this->assertEquals('Prop Guest', $labels['guest']);
     }
 }

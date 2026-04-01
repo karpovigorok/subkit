@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlanSetItem extends Model
 {
-
     protected $table = 'subkit_plan_set_items';
+
     protected $fillable = [
         'plan_set_id',
         'plan_id',
@@ -19,7 +19,7 @@ class PlanSetItem extends Model
     protected function casts(): array
     {
         return [
-            'sort_order'     => 'integer',
+            'sort_order' => 'integer',
             'is_highlighted' => 'boolean',
         ];
     }

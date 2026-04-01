@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class PlanProviderPrice extends Model
 {
     protected $table = 'subkit_plan_provider_prices';
+
     protected $fillable = [
         'plan_id',
         'provider',

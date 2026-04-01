@@ -2,15 +2,16 @@
 
 namespace SubKit\Models;
 
-use SubKit\Enums\SubscriptionInterval;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use SubKit\Enums\SubscriptionInterval;
 
 class Plan extends Model
 {
     protected $table = 'subkit_plans';
+
     protected $fillable = [
         'code',
         'name',
@@ -26,12 +27,12 @@ class Plan extends Model
     protected function casts(): array
     {
         return [
-            'interval'   => SubscriptionInterval::class,
+            'interval' => SubscriptionInterval::class,
             'trial_days' => 'integer',
-            'price'      => 'integer',
-            'is_active'  => 'boolean',
-            'version'    => 'integer',
-            'metadata'   => 'array',
+            'price' => 'integer',
+            'is_active' => 'boolean',
+            'version' => 'integer',
+            'metadata' => 'array',
         ];
     }
 
@@ -50,7 +51,7 @@ class Plan extends Model
 
                 $symbol = config('subkit.currency.symbol', '$');
 
-                return $symbol . number_format($this->price / 100, 2);
+                return $symbol.number_format($this->price / 100, 2);
             },
         );
     }

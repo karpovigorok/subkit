@@ -2,8 +2,6 @@
 
 namespace SubKit\Filament\Resources;
 
-use SubKit\Filament\Resources\SubscriberResource\Pages;
-use SubKit\Models\PlanProviderPrice;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -12,6 +10,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Laravel\Cashier\Subscription as CashierSubscription;
+use SubKit\Filament\Resources\SubscriberResource\Pages;
+use SubKit\Models\PlanProviderPrice;
 
 class SubscriberResource extends Resource
 {
@@ -55,12 +55,12 @@ class SubscriberResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state)))
                     ->color(fn (string $state): string => match ($state) {
-                        'active'             => 'success',
-                        'trialing'           => 'info',
+                        'active' => 'success',
+                        'trialing' => 'info',
                         'past_due', 'unpaid' => 'warning',
-                        'paused'             => 'warning',
-                        'canceled'           => 'danger',
-                        default              => 'gray',
+                        'paused' => 'warning',
+                        'canceled' => 'danger',
+                        default => 'gray',
                     })
                     ->sortable(),
 
@@ -80,12 +80,12 @@ class SubscriberResource extends Resource
                 SelectFilter::make('stripe_status')
                     ->label('Status')
                     ->options([
-                        'active'    => 'Active',
-                        'trialing'  => 'Trialing',
-                        'past_due'  => 'Past Due',
-                        'paused'    => 'Paused',
-                        'canceled'  => 'Canceled',
-                        'unpaid'    => 'Unpaid',
+                        'active' => 'Active',
+                        'trialing' => 'Trialing',
+                        'past_due' => 'Past Due',
+                        'paused' => 'Paused',
+                        'canceled' => 'Canceled',
+                        'unpaid' => 'Unpaid',
                     ]),
             ])
             ->actions([
@@ -100,8 +100,7 @@ class SubscriberResource extends Resource
                             ->label('Cancel immediately (cut access now, skip billing period end)')
                             ->default(false),
                     ])
-                    ->visible(fn (CashierSubscription $record): bool =>
-                        in_array($record->stripe_status, ['active', 'trialing', 'past_due'], strict: true)
+                    ->visible(fn (CashierSubscription $record): bool => in_array($record->stripe_status, ['active', 'trialing', 'past_due'], strict: true)
                         && ! $record->onGracePeriod()
                     )
                     ->action(function (CashierSubscription $record, array $data): void {
@@ -132,12 +131,10 @@ class SubscriberResource extends Resource
                     ->label('Open in Stripe')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->color('gray')
-                    ->url(fn (CashierSubscription $record): string =>
-                        'https://dashboard.stripe.com/customers/' . ($record->user?->stripe_id ?? '')
+                    ->url(fn (CashierSubscription $record): string => 'https://dashboard.stripe.com/customers/'.($record->user?->stripe_id ?? '')
                     )
                     ->openUrlInNewTab()
-                    ->visible(fn (CashierSubscription $record): bool =>
-                        $record->user?->stripe_id !== null
+                    ->visible(fn (CashierSubscription $record): bool => $record->user?->stripe_id !== null
                     ),
             ])
             ->defaultSort('created_at', 'desc');

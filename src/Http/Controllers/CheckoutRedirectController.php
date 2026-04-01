@@ -2,10 +2,10 @@
 
 namespace SubKit\Http\Controllers;
 
-use SubKit\Services\SubscriptionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use SubKit\Services\SubscriptionService;
 
 class CheckoutRedirectController extends Controller
 {
@@ -22,19 +22,19 @@ class CheckoutRedirectController extends Controller
         abort_unless($request->user(), 401);
 
         $data = $request->validate([
-            'plan_code'   => ['required', 'string'],
-            'company_id'  => ['nullable', 'string'],
+            'plan_code' => ['required', 'string'],
+            'company_id' => ['nullable', 'string'],
             'success_url' => ['required', 'string'],
-            'cancel_url'  => ['required', 'string'],
-            'provider'    => ['sometimes', 'string'],
+            'cancel_url' => ['required', 'string'],
+            'provider' => ['sometimes', 'string'],
         ]);
 
         $url = $this->service->checkout(
-            planCode:   $data['plan_code'],
-            userId:     (string) $request->user()->id,
+            planCode: $data['plan_code'],
+            userId: (string) $request->user()->id,
             successUrl: $data['success_url'],
-            cancelUrl:  $data['cancel_url'],
-            provider:   $data['provider'] ?? 'stripe',
+            cancelUrl: $data['cancel_url'],
+            provider: $data['provider'] ?? 'stripe',
         );
 
         return redirect()->away($url);
