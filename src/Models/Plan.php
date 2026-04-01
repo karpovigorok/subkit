@@ -8,6 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property string|null $description
+ * @property SubscriptionInterval $interval
+ * @property int|null $trial_days
+ * @property int|null $price
+ * @property bool $is_active
+ * @property int $version
+ * @property array|null $metadata
+ * @property-read string $formatted_price
+ */
+
 class Plan extends Model
 {
     protected $table = 'subkit_plans';
