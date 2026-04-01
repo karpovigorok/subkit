@@ -19,7 +19,7 @@
         "php": "^8.4",
         "spatie/laravel-package-tools": "^1.16",
         "illuminate/contracts": "^11.0||^12.0",
-        "filament/filament": "^3.2",
+        "filament/filament": "^5.4",
         "laravel/cashier": "^16.5"
     },
     "require-dev": {
