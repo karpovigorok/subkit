@@ -1,0 +1,77 @@
+{
+    "name": "karpovigorok/subkit",
+    "description": "A Laravel package for subscription and billing orchestration.",
+    "keywords": [
+        "Ihor Karpov",
+        "laravel",
+        "subkit"
+    ],
+    "homepage": "https://github.com/karpovigorok/subkit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ihor Karpov",
+            "email": "igorok.karpov@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "spatie/laravel-package-tools": "^1.16",
+        "illuminate/contracts": "^11.0||^12.0",
+        "filament/filament": "^3.2",
+        "laravel/cashier": "^16.5"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.8",
+        "larastan/larastan": "^3.0",
+        "orchestra/testbench": "^10.0.0||^9.0.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SubKit\\": "src/",
+            "SubKit\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "App\\": "workbench/app/",
+            "Database\\Factories\\": "database/factories/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SubKit\\SubKitServiceProvider"
+            ],
+            "aliases": {
+                "SubKit": "SubKit\\Facades\\SubKit"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
