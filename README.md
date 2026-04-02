@@ -22,6 +22,13 @@ While Laravel Cashier is incredibly powerful, building the actual UI and admin p
 - Provides Blade components: a pricing table and a subscription management UI, with multiple themes
 - Exposes a PHP facade and REST API for subscription operations (checkout, cancel, resume, billing portal)
 
+## Live Demo
+
+Try it in action: **[subkit.noxls.net](https://subkit.noxls.net)**
+
+* Register a test account to explore the customer billing flow.
+* Once registered, navigate to **`/admin`** to check out the Filament control panel.
+
 ## What it does NOT do
 
 - Process payments or store card data
