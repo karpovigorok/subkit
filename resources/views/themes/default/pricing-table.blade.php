@@ -14,7 +14,6 @@
         activeIndex() { return Math.max(0, this.intervals.indexOf(this.interval)); },
         knobStyle() {
             const count = this.intervals.length || 1;
-            // Учитываем паддинг p-1 (4px слева + 4px справа = 8px)
             return `width: calc((100% - 8px) / ${count}); transform: translateX(calc(${this.activeIndex()} * 100%));`;
         }
     }"
