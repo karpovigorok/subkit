@@ -7,7 +7,7 @@ Replace days of custom billing logic with a working setup on top of Stripe (Cash
 - Skip building pricing UI
 - Skip wiring Stripe webhooks manually
 
-[![SubKit Pricing](art/screen-subkit-theme-default.png)](art/screen-subkit-theme-default.png)
+[![SubKit Pricing](art/demo-how-subkit-works.gif)](art/screen-subkit-theme-default.png)
 
 
 SubKit provides a Filament admin panel to manage plans and plan sets, themeable Blade components for your pricing page and subscription dashboard, and a clean PHP API for subscription lifecycle operations.
@@ -159,19 +159,19 @@ With a plan set (for multiple landing pages or A/B testing):
 
 #### All pricing table props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `set` | `string\|null` | `null` | Plan set code. If omitted, shows all active plans. |
-| `theme` | `string\|null` | `'default'` | UI theme (`default`, `dark`, `modern`, or a custom theme). |
-| `provider` | `string` | `'stripe'` | Payment provider. |
+| Prop | Type | Default | Description                                                                           |
+|------|------|---------|---------------------------------------------------------------------------------------|
+| `set` | `string\|null` | `null` | Plan set code. If omitted, shows all active plans.                                    |
+| `theme` | `string\|null` | `'default'` | UI theme (`default`, `dark`, `light`, or a custom theme).                             |
+| `provider` | `string` | `'stripe'` | Payment provider.                                                                     |
 | `success-url` | `string` | `''` | Redirect after successful checkout. Accepts a route name, relative path, or full URL. |
-| `cancel-url` | `string` | `''` | Redirect when the user cancels checkout. |
-| `free-url` | `string` | `''` | CTA destination for $0 plans (authenticated users). |
-| `guest-redirect-url` | `string\|null` | `null` | Where unauthenticated visitors are sent. Defaults to `/register`. |
-| `company-id` | `string\|null` | `null` | For B2B: attaches the subscription to a company rather than a user. |
-| `subscribe-label` | `string\|null` | `null` | Override the "Get Started" button text. |
-| `free-label` | `string\|null` | `null` | Override the "Get Started Free" button text. |
-| `guest-label` | `string\|null` | `null` | Override the "Create Account to Subscribe" button text. |
+| `cancel-url` | `string` | `''` | Redirect when the user cancels checkout.                                              |
+| `free-url` | `string` | `''` | CTA destination for $0 plans (authenticated users).                                   |
+| `guest-redirect-url` | `string\|null` | `null` | Where unauthenticated visitors are sent. Defaults to `/register`.                     |
+| `company-id` | `string\|null` | `null` | For B2B: attaches the subscription to a company rather than a user.                   |
+| `subscribe-label` | `string\|null` | `null` | Override the "Get Started" button text.                                               |
+| `free-label` | `string\|null` | `null` | Override the "Get Started Free" button text.                                          |
+| `guest-label` | `string\|null` | `null` | Override the "Create Account to Subscribe" button text.                               |
 
 URL props accept a **route name** (e.g. `'dashboard'`), a **relative path** (e.g. `'/thanks?utm_source=fb'`), or a **full URL**. Route names are resolved automatically. URLs set in the admin panel (per Plan Set) serve as defaults when the prop is omitted.
 
