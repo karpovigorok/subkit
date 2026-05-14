@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Events\WebhookHandled;
+use SubKit\Listeners\FlushCapabilitiesCacheOnWebhook;
 use SubKit\Listeners\WebhookEventDispatcher;
 use SubKit\Services\ProviderRegistry;
 use SubKit\Services\SubscriptionService;
@@ -78,5 +79,9 @@ class SubKitServiceProvider extends ServiceProvider
         Blade::componentNamespace('SubKit\\View\\Components', 'subkit');
 
         Event::listen(WebhookHandled::class, WebhookEventDispatcher::class);
+
+        if (config('subkit.billable_model')) {
+            Event::listen(WebhookHandled::class, FlushCapabilitiesCacheOnWebhook::class);
+        }
     }
 }

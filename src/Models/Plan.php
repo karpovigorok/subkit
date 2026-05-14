@@ -69,6 +69,11 @@ class Plan extends Model
         );
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(fn (Plan $plan) => $plan->limits()->delete());
+    }
+
     public function providerPrices(): HasMany
     {
         return $this->hasMany(PlanProviderPrice::class);
@@ -95,5 +100,17 @@ class Plan extends Model
             ->withPivot('value', 'is_highlighted', 'sort_order')
             ->withTimestamps()
             ->orderByPivot('sort_order');
+    }
+
+    public function limits(): HasMany
+    {
+        return $this->hasMany(PlanLimit::class);
+    }
+
+    public function getLimit(string $key, mixed $default = null): mixed
+    {
+        $limit = $this->limits->firstWhere('key', $key);
+
+        return $limit ? $limit->casted_value : $default;
     }
 }

@@ -58,4 +58,21 @@ return [
         'prefix' => 'api/subkit',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Billable Model
+    |--------------------------------------------------------------------------
+    |
+    | The Eloquent model class that uses Cashier's Billable trait and
+    | SubKit's HasCapabilities trait. When set, the package automatically
+    | flushes the capabilities cache when a Stripe subscription webhook
+    | is received (customer.subscription.created/updated/deleted).
+    |
+    | Example: App\Models\User::class
+    |          App\Models\Team::class
+    |
+    */
+
+    'billable_model' => null,
+
 ];
