@@ -19,6 +19,7 @@ use Laravel\Cashier\Subscription;
 use SubKit\Enums\SubscriptionInterval;
 use SubKit\Filament\Resources\PlanResource\Pages;
 use SubKit\Filament\Resources\PlanResource\RelationManagers\FeaturesRelationManager;
+use SubKit\Filament\Resources\PlanResource\RelationManagers\LimitsRelationManager;
 use SubKit\Filament\Resources\PlanResource\RelationManagers\ProviderPricesRelationManager;
 use SubKit\Models\Plan;
 
@@ -185,6 +186,7 @@ class PlanResource extends Resource
         return [
             ProviderPricesRelationManager::class,
             FeaturesRelationManager::class,
+            LimitsRelationManager::class,
         ];
     }
 

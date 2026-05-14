@@ -18,9 +18,10 @@ While Laravel Cashier is incredibly powerful, building the actual UI and admin p
 ## What it does
 
 - Integrates with Stripe via Laravel Cashier (webhooks, checkout sessions, billing portal)
-- Provides a Filament admin panel to manage Plans, Plan Sets, and Provider Prices
+- Provides a Filament admin panel to manage Plans, Plan Sets, Provider Prices, Features, and Limits
 - Provides Blade components: a pricing table and a subscription management UI, with multiple themes
 - Exposes a PHP facade and REST API for subscription operations (checkout, cancel, resume, billing portal)
+- Exposes runtime plan limits (e.g. `max_locations`, `max_users`) via a `HasCapabilities` trait with built-in caching
 
 ## Live Demo
 
@@ -107,13 +108,28 @@ class User extends Authenticatable
 }
 ```
 
+To enable runtime plan limits and automatic cache flushing on subscription changes, also set `billable_model` in `config/subkit.php`:
+
+```php
+'billable_model' => App\Models\User::class,
+```
+
+For team-level subscriptions:
+
+```php
+'billable_model' => App\Models\Team::class,
+```
+
 ---
 
 ## Stripe setup
 
 ### 1. Create plans in the admin panel
 
-Navigate to your Filament admin panel (usually `/admin`) → **Plans** → Create a plan. After creating a plan, add a Stripe Price ID in the **Provider Prices** tab on the plan edit page.
+Navigate to your Filament admin panel (usually `/admin`) → **Plans** → Create a plan. After creating a plan:
+- Add a Stripe Price ID in the **Provider Prices** tab.
+- Attach marketing features in the **Features** tab (shown in pricing tables).
+- Define technical limits in the **Limits** tab (readable at runtime in your app logic).
 
 ### 2. Register the Stripe webhook
 
@@ -266,10 +282,78 @@ Per Plan Set you can configure:
 
 ## Plan Features
 
-SubKit includes a normalized, Many-to-Many feature management system.
-Instead of hardcoding features in your Blade files, you can manage a global library of features (e.g., "Priority Support", "Unlimited Projects") directly in the Filament admin panel.
+SubKit includes a normalized, many-to-many feature management system for **marketing and UI display**.
+Instead of hardcoding features in your Blade files, manage a global feature library (e.g., "Priority Support", "Unlimited Projects") in the Filament admin panel under **Features**.
 
-Simply attach features to your Plans using the intuitive Filament interface, and SubKit's pricing tables will automatically render them with beautiful checkmarks inside the pricing cards.
+Attach features to plans via the **Features** tab on the plan edit page. SubKit's pricing tables automatically render them with checkmarks inside the pricing cards.
+
+> **Note:** Features are for presentation only — they have no effect on application logic. Use [Plan Limits](#plan-limits) for enforcing technical constraints in your code.
+
+---
+
+## Plan Limits
+
+Plan Limits are **backend-only key-value constraints** per plan (e.g. `max_locations = 100`, `max_maps = 5`). They are intentionally separate from Features: limits drive engine logic, features drive marketing copy.
+
+### Defining limits
+
+In the Filament admin panel, open a plan and go to the **Limits** tab. Each limit has:
+
+| Field | Description |
+|-------|-------------|
+| **Key** | Snake-case identifier used in code — e.g. `max_locations` |
+| **Value** | The raw value stored as a string |
+| **Type** | How the value is cast when read: `Integer`, `Boolean`, or `String` |
+
+### Reading limits on a plan
+
+```php
+$plan->getLimit('max_locations');        // 100  (int)
+$plan->getLimit('can_export');           // true (bool)
+$plan->getLimit('tier');                 // 'gold' (string)
+$plan->getLimit('nonexistent', 0);       // 0 — custom default
+```
+
+### Reading limits at runtime via `HasCapabilities`
+
+Add the `HasCapabilities` trait to your billable model alongside Cashier's `Billable`:
+
+```php
+use Laravel\Cashier\Billable;
+use SubKit\Concerns\HasCapabilities;
+
+class User extends Authenticatable
+{
+    use Billable, HasCapabilities;
+}
+```
+
+Then call `getCapabilities()` anywhere in your application:
+
+```php
+$capabilities = $user->getCapabilities();
+// ['limits' => ['max_locations' => 100, 'max_maps' => 5]]
+
+$max = $capabilities['limits']['max_locations'] ?? 0;
+
+if ($user->locations()->count() >= $max) {
+    abort(403, 'Location limit reached for your plan.');
+}
+```
+
+`getCapabilities()` resolves the user's active subscription → matches it to a SubKit plan → returns all limits with their types cast. Results are cached for 5 minutes.
+
+If the user has no active subscription, `getCapabilities()` returns `['limits' => []]` without throwing.
+
+#### Flushing the cache manually
+
+```php
+$user->flushCapabilitiesCache();
+```
+
+#### Automatic cache flush on subscription change
+
+When `billable_model` is set in `config/subkit.php`, SubKit listens to Stripe's `customer.subscription.created/updated/deleted` webhooks and automatically calls `flushCapabilitiesCache()` on the affected model. No extra setup needed.
 
 ---
 
@@ -360,8 +444,8 @@ Event::listen(WebhookHandled::class, function (WebhookHandled $event) {
 
 | Tag | Publishes |
 |-----|-----------|
-| `subkit-config` | `config/subkit.php` |
-| `subkit-migrations` | All package migrations |
+| `subkit-config` | `config/subkit.php` — includes `billable_model` setting |
+| `subkit-migrations` | All package migrations (plans, features, limits, etc.) |
 | `subkit-views` | Blade views (for customization) |
 | `subkit-lang` | Translation strings |
 
