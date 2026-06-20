@@ -2,14 +2,14 @@
 
 namespace SubKit\Filament\Resources\PlanSetResource\RelationManagers;
 
-use Filament\Forms\Components\Placeholder;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -22,9 +22,9 @@ class PlanSetItemsRelationManager extends RelationManager
 
     protected static ?string $title = 'Plans in this set';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->schema([
             Select::make('plan_id')
                 ->label('Plan')
                 ->options(function (): array {
@@ -46,9 +46,9 @@ class PlanSetItemsRelationManager extends RelationManager
                 ->searchable()
                 ->hiddenOn('edit'),
 
-            Placeholder::make('plan_name')
+            TextEntry::make('plan_name')
                 ->label('Plan')
-                ->content(fn (PlanSetItem $record): string => "{$record->plan->name} ({$record->plan->code})")
+                ->state(fn (PlanSetItem $record): string => "{$record->plan->name} ({$record->plan->code})")
                 ->visibleOn('edit'),
 
             Toggle::make('is_highlighted')
@@ -90,7 +90,7 @@ class PlanSetItemsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()->label('Add plan'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make()->label('Remove'),
             ])
