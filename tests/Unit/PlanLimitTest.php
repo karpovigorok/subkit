@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Database\QueryException;
 use SubKit\Enums\SubscriptionInterval;
 use SubKit\Models\Plan;
 use SubKit\Models\PlanLimit;
@@ -117,7 +118,7 @@ class PlanLimitTest extends TestCase
 
         PlanLimit::create(['plan_id' => $plan->id, 'key' => 'max_users', 'value' => '5', 'type' => 'int']);
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectException(QueryException::class);
 
         PlanLimit::create(['plan_id' => $plan->id, 'key' => 'max_users', 'value' => '10', 'type' => 'int']);
     }
