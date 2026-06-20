@@ -2,13 +2,13 @@
 
 namespace SubKit\Filament\Resources\PlanResource\RelationManagers;
 
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rules\Unique;
@@ -19,9 +19,9 @@ class LimitsRelationManager extends RelationManager
 
     protected static ?string $title = 'Limits';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->schema([
             TextInput::make('key')
                 ->label('Key')
                 ->required()
@@ -77,7 +77,7 @@ class LimitsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()->label('Add limit'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])

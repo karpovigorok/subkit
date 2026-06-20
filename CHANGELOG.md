@@ -2,7 +2,7 @@
 
 All notable changes to `subkit` will be documented in this file.
 
-## v2.0.0 — Filament 5, Laravel 13, Plan Limits - 2026-06-20
+## [2.0.0] - 2026-06-20
 
 ### Added
 
@@ -16,3 +16,7 @@ All notable changes to `subkit` will be documented in this file.
 
 - **Filament 3 → Filament 5** — all Filament resources and relation managers upgraded to Filament 5 conventions (`Schema` instead of `Form`, `Filament\Actions` namespace, `recordActions` instead of `actions`).
 - **Laravel 12 → Laravel 12 + 13** — `illuminate/contracts` constraint updated to `^12.0||^13.0`; package now supports both versions. These are the primary breaking changes that warrant the major version bump.
+
+## [1.0.0] - 2026-03-27
+
+- Initial release. Stripe integration via Laravel Cashier, Filament admin panel, themed Blade components (pricing table, manage subscriptions), REST API, plan features, plan sets.

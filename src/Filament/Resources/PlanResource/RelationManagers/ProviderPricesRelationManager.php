@@ -2,13 +2,13 @@
 
 namespace SubKit\Filament\Resources\PlanResource\RelationManagers;
 
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rules\Unique;
@@ -19,9 +19,9 @@ class ProviderPricesRelationManager extends RelationManager
 
     protected static ?string $title = 'Provider Prices';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->schema([
             Select::make('provider')
                 ->label('Provider')
                 ->required()
@@ -63,7 +63,7 @@ class ProviderPricesRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()->label('Add provider price'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
