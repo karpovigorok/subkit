@@ -2,6 +2,52 @@
 
 All notable changes to `subkit` will be documented in this file.
 
+## v2.1.0 - 2026-08-13
+
+### What's new in v2.1.0
+
+#### Private / Custom Plans
+
+Plans can now be marked as **private** in the Filament admin. Private plans are hidden from the public pricing table and only shown to users you specifically assign them to.
+
+- New `is_private` flag on plans
+- `PlanAssignment` polymorphic model + two migrations to link plans to individual users
+- Filament **Assignments** relation manager — assign plans to users directly from the Plan detail page
+
+#### `<x-subkit::personal-offers>` component
+
+New Blade component that renders privately assigned plans for the authenticated user — same indigo/violet card design as the pricing table.
+
+  ```blade
+  <x-subkit::personal-offers
+    :success-url="route('dashboard')"
+    claim-label="Activate Offer"
+/>
+
+  ```
+Supports claim-label, success-url, provider, and theme props.
+
+Free / $0 plan support
+
+Plans with no price and no Stripe price ID are now activated instantly — no Stripe Checkout session created. A local subscription record is written directly to the database with a local_ prefixed ID for reliable lifecycle tracking. Cancel and resume also bypass the Stripe API for these subscriptions.
+
+Breaking change
+
+SubscriptionService::checkout() now returns a CheckoutResult value object instead of a plain URL string. Update any direct calls:
+
+```php
+  // before
+  $url = SubKit::checkout(...);
+  
+  // after
+  $result = SubKit::checkout(...);
+  $url = $result->url;
+  $wasInstant = $result->directlySubscribed;
+
+```
+**Tests**
+115 tests, 173 assertions — 12 new tests covering free plan checkout, local subscription lifecycle, and PersonalOffers filtering.
+
 ## [2.0.0] - 2026-06-20
 
 ### Added
