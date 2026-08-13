@@ -48,13 +48,13 @@ class PersonalOffers extends BaseSubscriptionComponent
     protected function getThemeData(): array
     {
         return [
-            'theme'      => $this->theme,
-            'offers'     => $this->offers,
-            'provider'   => $this->provider,
+            'theme' => $this->theme,
+            'offers' => $this->offers,
+            'provider' => $this->provider,
             'successUrl' => $this->resolvedSuccessUrl,
-            'cancelUrl'  => url()->current(),
-            'companyId'  => $this->companyId,
-            'labels'     => [
+            'cancelUrl' => url()->current(),
+            'companyId' => $this->companyId,
+            'labels' => [
                 'claim' => $this->claimLabel ?? __('subkit::messages.buttons.claim_offer'),
             ],
         ];
@@ -99,7 +99,7 @@ class PersonalOffers extends BaseSubscriptionComponent
             $priceId = $plan->providerPrice($this->provider)?->provider_price_id;
 
             return ($priceId && in_array($priceId, $activeStripePrices))
-                || in_array('local:' . $plan->code, $activeStripePrices)
+                || in_array('local:'.$plan->code, $activeStripePrices)
                 || (! $priceId && in_array(null, $activeStripePrices, strict: true));
         })->values();
     }

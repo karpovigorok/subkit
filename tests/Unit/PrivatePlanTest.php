@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use Illuminate\Database\QueryException;
 use SubKit\Enums\SubscriptionInterval;
 use SubKit\Models\Plan;
 use SubKit\Models\PlanAssignment;
@@ -116,7 +117,7 @@ class PrivatePlanTest extends TestCase
             'assignable_id' => 1,
         ]);
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectException(QueryException::class);
 
         PlanAssignment::create([
             'plan_id' => $plan->id,

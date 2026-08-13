@@ -34,18 +34,18 @@ class PersonalOffersTest extends TestCase
     {
         $i = ++self::$planSeq;
         $plan = Plan::create([
-            'code'      => "offers-plan-{$i}",
-            'name'      => "Offer Plan {$i}",
-            'interval'  => 'monthly',
+            'code' => "offers-plan-{$i}",
+            'name' => "Offer Plan {$i}",
+            'interval' => 'monthly',
             'is_active' => true,
             'is_private' => $isPrivate,
-            'version'   => 1,
+            'version' => 1,
         ]);
 
         if ($stripePrice) {
             PlanProviderPrice::create([
-                'plan_id'           => $plan->id,
-                'provider'          => 'stripe',
+                'plan_id' => $plan->id,
+                'provider' => 'stripe',
                 'provider_price_id' => $stripePrice,
             ]);
         }
@@ -56,20 +56,20 @@ class PersonalOffersTest extends TestCase
     private function assignPlan(Plan $plan, User $user): PlanAssignment
     {
         return PlanAssignment::create([
-            'plan_id'         => $plan->id,
+            'plan_id' => $plan->id,
             'assignable_type' => User::class,
-            'assignable_id'   => $user->id,
+            'assignable_id' => $user->id,
         ]);
     }
 
     private function subscribeTo(User $user, string $stripePrice, string $status = 'active'): CashierSubscription
     {
         return CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'sub_test_' . uniqid(),
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_test_'.uniqid(),
             'stripe_status' => $status,
-            'stripe_price'  => $stripePrice,
+            'stripe_price' => $stripePrice,
         ]);
     }
 
@@ -79,7 +79,7 @@ class PersonalOffersTest extends TestCase
 
     public function test_private_plan_is_excluded_from_scope_public(): void
     {
-        $public  = $this->makePlan(isPrivate: false);
+        $public = $this->makePlan(isPrivate: false);
         $private = $this->makePlan(isPrivate: true);
 
         $ids = Plan::public()->pluck('id');
@@ -159,8 +159,8 @@ class PersonalOffersTest extends TestCase
 
     public function test_only_assigned_plans_appear_not_all_private_plans(): void
     {
-        $user        = $this->makeUser();
-        $assigned    = $this->makePlan(isPrivate: true);
+        $user = $this->makeUser();
+        $assigned = $this->makePlan(isPrivate: true);
         $notAssigned = $this->makePlan(isPrivate: true);
 
         $this->assignPlan($assigned, $user);
@@ -178,9 +178,9 @@ class PersonalOffersTest extends TestCase
 
     public function test_active_subscription_removes_plan_from_offers(): void
     {
-        $user  = $this->makeUser();
+        $user = $this->makeUser();
         $price = 'price_demo_active';
-        $plan  = $this->makePlan(isPrivate: true, stripePrice: $price);
+        $plan = $this->makePlan(isPrivate: true, stripePrice: $price);
         $this->assignPlan($plan, $user);
         $this->subscribeTo($user, $price, 'active');
 
@@ -192,9 +192,9 @@ class PersonalOffersTest extends TestCase
 
     public function test_trialing_subscription_removes_plan_from_offers(): void
     {
-        $user  = $this->makeUser();
+        $user = $this->makeUser();
         $price = 'price_demo_trial';
-        $plan  = $this->makePlan(isPrivate: true, stripePrice: $price);
+        $plan = $this->makePlan(isPrivate: true, stripePrice: $price);
         $this->assignPlan($plan, $user);
         $this->subscribeTo($user, $price, 'trialing');
 
@@ -207,9 +207,9 @@ class PersonalOffersTest extends TestCase
     public function test_canceled_subscription_does_not_remove_plan_from_offers(): void
     {
         // A user whose subscription lapsed should see the offer again
-        $user  = $this->makeUser();
+        $user = $this->makeUser();
         $price = 'price_demo_canceled';
-        $plan  = $this->makePlan(isPrivate: true, stripePrice: $price);
+        $plan = $this->makePlan(isPrivate: true, stripePrice: $price);
         $this->assignPlan($plan, $user);
         $this->subscribeTo($user, $price, 'canceled');
 
@@ -221,10 +221,10 @@ class PersonalOffersTest extends TestCase
     public function test_unsubscribed_plan_remains_in_offers_despite_other_active_subscription(): void
     {
         // User is subscribed to plan A but not plan B — plan B's offer should still appear
-        $user    = $this->makeUser();
-        $priceA  = 'price_demo_a';
-        $planA   = $this->makePlan(isPrivate: true, stripePrice: $priceA);
-        $planB   = $this->makePlan(isPrivate: true);
+        $user = $this->makeUser();
+        $priceA = 'price_demo_a';
+        $planA = $this->makePlan(isPrivate: true, stripePrice: $priceA);
+        $planB = $this->makePlan(isPrivate: true);
 
         $this->assignPlan($planA, $user);
         $this->assignPlan($planB, $user);

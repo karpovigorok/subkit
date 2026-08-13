@@ -33,34 +33,35 @@ class FreePlanTest extends TestCase
     private function makeFreePlan(?string $code = null): Plan
     {
         $i = ++self::$seq;
+
         return Plan::create([
-            'code'       => $code ?? "free-plan-{$i}",
-            'name'       => "Free Plan {$i}",
-            'interval'   => 'monthly',
-            'price'      => null,
-            'is_active'  => true,
+            'code' => $code ?? "free-plan-{$i}",
+            'name' => "Free Plan {$i}",
+            'interval' => 'monthly',
+            'price' => null,
+            'is_active' => true,
             'is_private' => true,
-            'version'    => 1,
+            'version' => 1,
         ]);
     }
 
     private function assignPlan(Plan $plan, User $user): void
     {
         PlanAssignment::create([
-            'plan_id'         => $plan->id,
+            'plan_id' => $plan->id,
             'assignable_type' => User::class,
-            'assignable_id'   => $user->id,
+            'assignable_id' => $user->id,
         ]);
     }
 
     private function localSubscription(User $user, string $planCode, string $status = 'active'): CashierSubscription
     {
         return CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'local_' . uniqid(),
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'local_'.uniqid(),
             'stripe_status' => $status,
-            'stripe_price'  => 'local:' . $planCode,
+            'stripe_price' => 'local:'.$planCode,
         ]);
     }
 
@@ -86,7 +87,7 @@ class FreePlanTest extends TestCase
         );
 
         $this->assertDatabaseHas('subscriptions', [
-            'user_id'       => $user->id,
+            'user_id' => $user->id,
             'stripe_status' => 'active',
         ]);
     }
@@ -104,7 +105,7 @@ class FreePlanTest extends TestCase
         );
 
         $this->assertDatabaseHas('subscriptions', [
-            'user_id'      => $user->id,
+            'user_id' => $user->id,
             'stripe_price' => 'local:my-demo-plan',
         ]);
     }
@@ -149,12 +150,12 @@ class FreePlanTest extends TestCase
     {
         $user = $this->makeUser();
         $plan = $this->makeFreePlan();
-        $sub  = $this->localSubscription($user, $plan->code);
+        $sub = $this->localSubscription($user, $plan->code);
 
         $this->service()->cancel($sub->id);
 
         $this->assertDatabaseHas('subscriptions', [
-            'id'            => $sub->id,
+            'id' => $sub->id,
             'stripe_status' => 'canceled',
         ]);
     }
@@ -165,7 +166,7 @@ class FreePlanTest extends TestCase
 
         $user = $this->makeUser();
         $plan = $this->makeFreePlan();
-        $sub  = $this->localSubscription($user, $plan->code);
+        $sub = $this->localSubscription($user, $plan->code);
 
         $this->service()->cancel($sub->id);
 
@@ -180,12 +181,12 @@ class FreePlanTest extends TestCase
         // it must reach the Stripe provider (which would throw here since there's
         // no valid Stripe key in tests, confirming the provider was invoked).
         $user = $this->makeUser();
-        $sub  = CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'sub_real_' . uniqid(),
+        $sub = CashierSubscription::create([
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'sub_real_'.uniqid(),
             'stripe_status' => 'active',
-            'stripe_price'  => 'price_real_abc',
+            'stripe_price' => 'price_real_abc',
         ]);
 
         $this->expectException(\Throwable::class);
@@ -200,13 +201,13 @@ class FreePlanTest extends TestCase
     {
         $user = $this->makeUser();
         $plan = $this->makeFreePlan();
-        $sub  = $this->localSubscription($user, $plan->code);
+        $sub = $this->localSubscription($user, $plan->code);
         $sub->update(['stripe_status' => 'canceled', 'ends_at' => now()]);
 
         $this->service()->resume($sub->id);
 
         $this->assertDatabaseHas('subscriptions', [
-            'id'            => $sub->id,
+            'id' => $sub->id,
             'stripe_status' => 'active',
         ]);
     }
@@ -215,7 +216,7 @@ class FreePlanTest extends TestCase
     {
         $user = $this->makeUser();
         $plan = $this->makeFreePlan();
-        $sub  = $this->localSubscription($user, $plan->code);
+        $sub = $this->localSubscription($user, $plan->code);
         $sub->update(['stripe_status' => 'canceled', 'ends_at' => now()]);
 
         $this->service()->resume($sub->id);
@@ -248,11 +249,11 @@ class FreePlanTest extends TestCase
         $this->assignPlan($plan, $user);
 
         CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'local_' . uniqid(),
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'local_'.uniqid(),
             'stripe_status' => 'active',
-            'stripe_price'  => null,
+            'stripe_price' => null,
         ]);
 
         $component = new PersonalOffers(userId: (string) $user->id);

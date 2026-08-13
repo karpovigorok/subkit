@@ -76,10 +76,10 @@ class SubscriptionService
             // hasAccess() and getCapabilities() will work; cancel/resume/portal require a real Stripe price.
             CashierSubscription::create([
                 $user->getForeignKey() => $user->getKey(),
-                'type'          => 'default',
-                'stripe_id'     => 'local_' . Str::uuid(),
+                'type' => 'default',
+                'stripe_id' => 'local_'.Str::uuid(),
                 'stripe_status' => 'active',
-                'stripe_price'  => $planCode ? 'local:' . $planCode : null,
+                'stripe_price' => $planCode ? 'local:'.$planCode : null,
             ]);
         }
 
@@ -121,6 +121,7 @@ class SubscriptionService
             $sub->stripe_status = 'canceled';
             $sub->ends_at = now();
             $sub->save();
+
             return;
         }
 
@@ -137,6 +138,7 @@ class SubscriptionService
             $sub->stripe_status = 'active';
             $sub->ends_at = null;
             $sub->save();
+
             return;
         }
 
