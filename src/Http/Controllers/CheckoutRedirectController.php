@@ -29,14 +29,18 @@ class CheckoutRedirectController extends Controller
             'provider' => ['sometimes', 'string'],
         ]);
 
-        $url = $this->service->checkout(
+        $result = $this->service->checkout(
             planCode: $data['plan_code'],
-            userId: (string) $request->user()->id,
+            userId: $data['company_id'] ?? (string) $request->user()->id,
             successUrl: $data['success_url'],
             cancelUrl: $data['cancel_url'],
             provider: $data['provider'] ?? 'stripe',
         );
 
-        return redirect()->away($url);
+        if ($result->directlySubscribed) {
+            return redirect($result->url)->with('success', __('subkit::messages.subscribed_instantly'));
+        }
+
+        return redirect()->away($result->url);
     }
 }

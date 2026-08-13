@@ -23,7 +23,7 @@ class CheckoutController extends Controller
             'provider' => ['sometimes', 'string'],
         ]);
 
-        $url = $this->service->checkout(
+        $result = $this->service->checkout(
             planCode: $data['plan_code'],
             userId: $data['user_id'],
             successUrl: $data['success_url'],
@@ -31,6 +31,14 @@ class CheckoutController extends Controller
             provider: $data['provider'] ?? 'stripe',
         );
 
-        return response()->json(['checkout_url' => $url]);
+        if ($result->directlySubscribed) {
+            return response()->json([
+                'subscribed' => true,
+                'redirect_url' => $result->url,
+                'message' => __('subkit::messages.subscribed_instantly'),
+            ]);
+        }
+
+        return response()->json(['checkout_url' => $result->url]);
     }
 }

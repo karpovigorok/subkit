@@ -3,7 +3,6 @@
 namespace SubKit\View\Components;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Route;
 use SubKit\Models\Plan;
 use SubKit\Models\PlanSet;
 
@@ -56,7 +55,7 @@ class PricingTable extends BaseSubscriptionComponent
                 ->where('is_active', true)
                 ->firstOrFail();
 
-            $this->plans = $planSet->plans->where('is_active', true)->values();
+            $this->plans = $planSet->plans->where('is_active', true)->where('is_private', false)->values();
             $this->setDescription = $planSet->description;
 
             $this->highlighted = $this->plans
@@ -78,7 +77,7 @@ class PricingTable extends BaseSubscriptionComponent
             $this->successUrl = $this->resolvedSuccessUrl;
             $this->cancelUrl = $this->resolvedCancelUrl;
         } else {
-            $this->plans = Plan::where('is_active', true)->orderBy('id')->get();
+            $this->plans = Plan::public()->where('is_active', true)->orderBy('id')->get();
             $this->highlighted = [];
             $this->setDescription = null;
 
@@ -112,35 +111,6 @@ class PricingTable extends BaseSubscriptionComponent
         $this->plansByInterval = $this->plans
             ->groupBy(fn (Plan $p) => $p->interval->value)
             ->all();
-    }
-
-    /**
-     * Resolve a URL value: if it's a named route, return the full URL.
-     * Relative paths (starting with /) are made absolute — Stripe requires full URLs.
-     * Returns $fallback for empty input.
-     */
-    protected function resolveUrl(?string $value, string $fallback = '#'): string
-    {
-        if (empty($value)) {
-            return $fallback;
-        }
-
-        // Strip accidental surrounding quotes (e.g. 'dashboard' → dashboard).
-        $value = trim($value, "'\"");
-
-        if (empty($value)) {
-            return $fallback;
-        }
-
-        if (Route::has($value)) {
-            return route($value);
-        }
-
-        if (str_starts_with($value, '/')) {
-            return url($value);
-        }
-
-        return $value;
     }
 
     protected function resolveLabels(?PlanSet $planSet): array

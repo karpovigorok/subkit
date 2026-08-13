@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'subscribed_instantly' => 'Your plan has been activated.',
+
     'pricing' => [
         'toggle_monthly' => 'Monthly',
         'toggle_yearly' => 'Yearly',
@@ -12,5 +14,6 @@ return [
         'get_started' => 'Get Started',
         'get_started_free' => 'Get Started Free',
         'create_account_to_subscribe' => 'Create Account to Subscribe',
+        'claim_offer' => 'Claim Offer',
     ],
 ];

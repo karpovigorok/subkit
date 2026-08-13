@@ -2,6 +2,7 @@
 
 namespace SubKit\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,6 +18,7 @@ use SubKit\Enums\SubscriptionInterval;
  * @property int|null $trial_days
  * @property int|null $price
  * @property bool $is_active
+ * @property bool $is_private
  * @property int $version
  * @property array|null $metadata
  * @property-read string $formatted_price
@@ -33,6 +35,7 @@ class Plan extends Model
         'trial_days',
         'price',
         'is_active',
+        'is_private',
         'version',
         'metadata',
     ];
@@ -44,6 +47,7 @@ class Plan extends Model
             'trial_days' => 'integer',
             'price' => 'integer',
             'is_active' => 'boolean',
+            'is_private' => 'boolean',
             'version' => 'integer',
             'metadata' => 'array',
         ];
@@ -71,7 +75,10 @@ class Plan extends Model
 
     protected static function booted(): void
     {
-        static::deleting(fn (Plan $plan) => $plan->limits()->delete());
+        static::deleting(function (Plan $plan): void {
+            $plan->limits()->delete();
+            $plan->assignments()->delete();
+        });
     }
 
     public function providerPrices(): HasMany
@@ -102,9 +109,19 @@ class Plan extends Model
             ->orderByPivot('sort_order');
     }
 
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(PlanAssignment::class);
+    }
+
     public function limits(): HasMany
     {
         return $this->hasMany(PlanLimit::class);
+    }
+
+    public function scopePublic(Builder $query): void
+    {
+        $query->where('is_private', false);
     }
 
     public function getLimit(string $key, mixed $default = null): mixed

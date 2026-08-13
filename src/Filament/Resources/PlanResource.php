@@ -8,16 +8,20 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Subscription;
 use SubKit\Enums\SubscriptionInterval;
 use SubKit\Filament\Resources\PlanResource\Pages;
+use SubKit\Filament\Resources\PlanResource\RelationManagers\AssignmentsRelationManager;
 use SubKit\Filament\Resources\PlanResource\RelationManagers\FeaturesRelationManager;
 use SubKit\Filament\Resources\PlanResource\RelationManagers\LimitsRelationManager;
 use SubKit\Filament\Resources\PlanResource\RelationManagers\ProviderPricesRelationManager;
@@ -98,6 +102,12 @@ class PlanResource extends Resource
                         ->label('Active')
                         ->default(true)
                         ->helperText('Only active plans appear in the pricing table.'),
+
+                    Toggle::make('is_private')
+                        ->label('Private / Custom Plan')
+                        ->default(false)
+                        ->live()
+                        ->helperText('Hidden from public pricing tables. Use the field below to assign this plan directly to specific subscribers.'),
                 ]),
 
             Section::make('Description')
@@ -107,6 +117,54 @@ class PlanResource extends Resource
                         ->rows(3)
                         ->maxLength(1000),
                 ]),
+
+            Section::make('Subscriber Assignments')
+                ->schema([
+                    Select::make('assignee_ids')
+                        ->label('Assigned subscribers')
+                        ->multiple()
+                        ->searchable()
+                        ->visible(fn (Get $get): bool => (bool) $get('is_private'))
+                        ->getSearchResultsUsing(function (string $search): array {
+                            $model = config('subkit.billable_model');
+                            if (! $model) {
+                                return [];
+                            }
+                            $col = config('subkit.billable_search_column', 'email');
+
+                            return $model::where($col, 'like', "%{$search}%")
+                                ->limit(50)
+                                ->pluck($col, 'id')
+                                ->toArray();
+                        })
+                        ->getOptionLabelsUsing(function (array $values): array {
+                            $model = config('subkit.billable_model');
+                            if (! $model) {
+                                return [];
+                            }
+                            $col = config('subkit.billable_search_column', 'email');
+
+                            return $model::whereIn('id', $values)
+                                ->pluck($col, 'id')
+                                ->toArray();
+                        })
+                        ->afterStateHydrated(function (Set $set, ?Model $record): void {
+                            $model = config('subkit.billable_model');
+                            if (! $record || ! $model) {
+                                $set('assignee_ids', []);
+
+                                return;
+                            }
+                            $ids = $record->assignments()
+                                ->where('assignable_type', $model)
+                                ->pluck('assignable_id')
+                                ->map(fn ($id) => (string) $id)
+                                ->toArray();
+                            $set('assignee_ids', $ids);
+                        })
+                        ->helperText('Search by email. Changes are saved when you save the plan.'),
+                ])
+                ->visible(fn (Get $get): bool => (bool) $get('is_private')),
         ]);
     }
 
@@ -154,6 +212,12 @@ class PlanResource extends Resource
                     ->label('Active')
                     ->boolean(),
 
+                IconColumn::make('is_private')
+                    ->label('Visibility')
+                    ->icon(fn (bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-globe-alt')
+                    ->color(fn (bool $state): string => $state ? 'warning' : 'success')
+                    ->tooltip(fn (bool $state): string => $state ? 'Private' : 'Public'),
+
                 //                TextColumn::make('providerPrices_count')
                 //                    ->label('Providers')
                 //                    ->counts('providerPrices')
@@ -187,6 +251,7 @@ class PlanResource extends Resource
             ProviderPricesRelationManager::class,
             FeaturesRelationManager::class,
             LimitsRelationManager::class,
+            AssignmentsRelationManager::class,
         ];
     }
 

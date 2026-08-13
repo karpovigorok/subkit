@@ -2,6 +2,7 @@
 
 namespace SubKit\View\Components;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
@@ -30,6 +31,35 @@ abstract class BaseSubscriptionComponent extends Component
             "subkit::themes.default.{$this->componentName()}",
             array_merge($this->getThemeData(), ['theme' => 'default'])
         );
+    }
+
+    /**
+     * Resolve a URL value: if it's a named route, return the full URL.
+     * Relative paths (starting with /) are made absolute — Stripe requires full URLs.
+     * Returns $fallback for empty input.
+     */
+    protected function resolveUrl(?string $value, string $fallback = '#'): string
+    {
+        if (empty($value)) {
+            return $fallback;
+        }
+
+        // Strip accidental surrounding quotes (e.g. 'dashboard' → dashboard).
+        $value = trim($value, "'\"");
+
+        if (empty($value)) {
+            return $fallback;
+        }
+
+        if (Route::has($value)) {
+            return route($value);
+        }
+
+        if (str_starts_with($value, '/')) {
+            return url($value);
+        }
+
+        return $value;
     }
 
     /**
