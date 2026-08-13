@@ -2,25 +2,51 @@
 
 All notable changes to `subkit` will be documented in this file.
 
-## [2.1.0] - 2026-08-13
+## v2.1.0 - 2026-08-13
 
-### Added
+### What's new in v2.1.0
 
-- **Private / Custom Plans** — plans can be marked `is_private` in the Filament admin. Private plans are hidden from the public pricing table and only visible to specifically assigned users.
-- **`PlanAssignment` model + migrations** — two new migrations (`add_is_private_to_plans_table`, `create_subkit_plan_assignments_table`) link private plans to individual billable models via a polymorphic `assignments` relation.
-- **Filament Assignments relation manager** — manage per-user plan assignments directly from the Plan detail page in the admin panel.
-- **`<x-subkit::personal-offers>` component** — new Blade component that shows privately assigned plans for the authenticated user. Renders cards in the same indigo/violet design language as the pricing table. Supports `claim-label`, `success-url`, `provider`, and `theme` props.
-- **Free / $0 plan support** — plans with `price = null` or `price = 0` and no Stripe price ID are activated instantly without creating a Stripe Checkout session. A local subscription record is created with a `local_` prefixed `stripe_id` and `local:{plan_code}` stored in `stripe_price` for reliable lifecycle tracking.
-- **Local subscription cancel/resume** — `SubscriptionService::cancel()` and `resume()` detect local subscriptions by the `local_` prefix and update the database directly, bypassing the Stripe API entirely.
-- **`CheckoutResult` value object** — `checkout()` now returns a typed `CheckoutResult(url, directlySubscribed)` instead of a plain string, so callers can distinguish an instant activation from a Stripe Checkout redirect.
-- **`billable_model` config key used consistently** — `SubscriptionService` now resolves the billable model from `subkit.billable_model` config rather than `auth.providers.users.model`, matching the rest of the package.
-- **Tests** — 12 new tests covering free plan checkout, local subscription lifecycle (cancel/resume), and PersonalOffers filtering logic. Total: 115 tests, 173 assertions.
+#### Private / Custom Plans
 
-### Changed
+Plans can now be marked as **private** in the Filament admin. Private plans are hidden from the public pricing table and only shown to users you specifically assign them to.
 
-- `PricingTable` filters out private plans from both the global plan list and per-set plan lists, so private plans never appear in public pricing tables.
-- `PersonalOffers` filtering uses three conditions to exclude already-claimed plans: active Stripe price match, `local:{plan_code}` match, and legacy `null` stripe_price match (for subscriptions created before the `local:{code}` tracking was introduced).
-- Resume button in `manage-subscriptions` template gains an inline `style` gradient fallback to survive Tailwind CSS purging in host apps.
+- New `is_private` flag on plans
+- `PlanAssignment` polymorphic model + two migrations to link plans to individual users
+- Filament **Assignments** relation manager — assign plans to users directly from the Plan detail page
+
+#### `<x-subkit::personal-offers>` component
+
+New Blade component that renders privately assigned plans for the authenticated user — same indigo/violet card design as the pricing table.
+
+  ```blade
+  <x-subkit::personal-offers
+    :success-url="route('dashboard')"
+    claim-label="Activate Offer"
+/>
+
+  ```
+Supports claim-label, success-url, provider, and theme props.
+
+Free / $0 plan support
+
+Plans with no price and no Stripe price ID are now activated instantly — no Stripe Checkout session created. A local subscription record is written directly to the database with a local_ prefixed ID for reliable lifecycle tracking. Cancel and resume also bypass the Stripe API for these subscriptions.
+
+Breaking change
+
+SubscriptionService::checkout() now returns a CheckoutResult value object instead of a plain URL string. Update any direct calls:
+
+```php
+  // before
+  $url = SubKit::checkout(...);
+  
+  // after
+  $result = SubKit::checkout(...);
+  $url = $result->url;
+  $wasInstant = $result->directlySubscribed;
+
+```
+**Tests**
+115 tests, 173 assertions — 12 new tests covering free plan checkout, local subscription lifecycle, and PersonalOffers filtering.
 
 ## [2.0.0] - 2026-06-20
 
