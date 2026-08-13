@@ -50,16 +50,23 @@ trait HasCapabilities
             return $empty;
         }
 
-        $stripePrice = $subscription->items->first()?->stripe_price;
+        $stripePrice = $subscription->items->first()?->stripe_price
+            ?? $subscription->stripe_price;
 
         if (! $stripePrice) {
             return $empty;
         }
 
-        $plan = Plan::whereHas(
-            'providerPrices',
-            fn ($q) => $q->where('provider_price_id', $stripePrice)
-        )->with('limits')->first();
+        if (str_starts_with($stripePrice, 'local:')) {
+            $plan = Plan::where('code', substr($stripePrice, 6))
+                ->with('limits')
+                ->first();
+        } else {
+            $plan = Plan::whereHas(
+                'providerPrices',
+                fn ($q) => $q->where('provider_price_id', $stripePrice)
+            )->with('limits')->first();
+        }
 
         if (! $plan) {
             return $empty;

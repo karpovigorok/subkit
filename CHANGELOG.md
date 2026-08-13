@@ -2,6 +2,12 @@
 
 All notable changes to `subkit` will be documented in this file.
 
+## v2.1.2 - 2026-08-13
+
+### Fixed
+
+- **`HasCapabilities::getCapabilities()` returns empty limits for local/$0 subscriptions** — `resolveCapabilities()` was reading `stripe_price` exclusively from `subscription_items`, which is empty for local subscriptions (Cashier only populates items for real Stripe subscriptions). Now falls back to the subscription's own `stripe_price` column, and handles the `local:{code}` prefix by looking up the plan by code rather than by provider price ID.
+
 ## v2.1.0 - 2026-08-13
 
 ### What's new in v2.1.0
