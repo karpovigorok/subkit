@@ -25,12 +25,12 @@ class HasCapabilitiesTest extends TestCase
     private function makePlanWithLimits(string $code): Plan
     {
         $plan = Plan::create([
-            'code'      => $code,
-            'name'      => $code,
-            'interval'  => 'monthly',
-            'price'     => null,
+            'code' => $code,
+            'name' => $code,
+            'interval' => 'monthly',
+            'price' => null,
             'is_active' => true,
-            'version'   => 1,
+            'version' => 1,
         ]);
 
         PlanLimit::create(['plan_id' => $plan->id, 'key' => 'max_locations', 'value' => '10',   'type' => 'int']);
@@ -42,11 +42,11 @@ class HasCapabilitiesTest extends TestCase
     private function localSub(User $user, string $planCode): CashierSubscription
     {
         return CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'local_' . uniqid(),
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'local_'.uniqid(),
             'stripe_status' => 'active',
-            'stripe_price'  => 'local:' . $planCode,
+            'stripe_price' => 'local:'.$planCode,
         ]);
     }
 
@@ -60,7 +60,7 @@ class HasCapabilitiesTest extends TestCase
 
         $caps = $user->getCapabilities();
 
-        $this->assertSame(10,   $caps['limits']['max_locations']);
+        $this->assertSame(10, $caps['limits']['max_locations']);
         $this->assertSame(true, $caps['limits']['can_export']);
     }
 
@@ -77,11 +77,11 @@ class HasCapabilitiesTest extends TestCase
     {
         $user = $this->makeUser();
         CashierSubscription::create([
-            'user_id'       => $user->id,
-            'type'          => 'default',
-            'stripe_id'     => 'local_' . uniqid(),
+            'user_id' => $user->id,
+            'type' => 'default',
+            'stripe_id' => 'local_'.uniqid(),
             'stripe_status' => 'active',
-            'stripe_price'  => null,
+            'stripe_price' => null,
         ]);
 
         $caps = $user->getCapabilities();
@@ -95,7 +95,7 @@ class HasCapabilitiesTest extends TestCase
         $plan = $this->makePlanWithLimits('cap-plan-2');
         $this->localSub($user, $plan->code);
 
-        $first  = $user->getCapabilities();
+        $first = $user->getCapabilities();
         $second = $user->getCapabilities();
 
         $this->assertSame($first, $second);
