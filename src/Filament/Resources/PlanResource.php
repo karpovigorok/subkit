@@ -108,6 +108,11 @@ class PlanResource extends Resource
                         ->default(false)
                         ->live()
                         ->helperText('Hidden from public pricing tables. Use the field below to assign this plan directly to specific subscribers.'),
+
+                    Toggle::make('can_cancel')
+                        ->label('Can Cancel')
+                        ->default(true)
+                        ->helperText('When disabled, subscribers cannot cancel this plan from their subscription page.'),
                 ]),
 
             Section::make('Description')

@@ -19,6 +19,7 @@ use SubKit\Enums\SubscriptionInterval;
  * @property int|null $price
  * @property bool $is_active
  * @property bool $is_private
+ * @property bool $can_cancel
  * @property int $version
  * @property array|null $metadata
  * @property-read string $formatted_price
@@ -36,6 +37,7 @@ class Plan extends Model
         'price',
         'is_active',
         'is_private',
+        'can_cancel',
         'version',
         'metadata',
     ];
@@ -48,6 +50,7 @@ class Plan extends Model
             'price' => 'integer',
             'is_active' => 'boolean',
             'is_private' => 'boolean',
+            'can_cancel' => 'boolean',
             'version' => 'integer',
             'metadata' => 'array',
         ];
