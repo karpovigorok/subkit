@@ -42,7 +42,7 @@ Try it in action: **[subkit.noxls.net](https://subkit.noxls.net)**
 ## Requirements
 
 - PHP 8.4+
-- Laravel 11+
+- Laravel 12+
 - Laravel Cashier (`laravel/cashier` ^16.5) installed and configured
 - Filament (`filament/filament` ^5.0)
 - MySQL 8+ (or MariaDB 10.5+)
