@@ -2,6 +2,12 @@
 
 All notable changes to `subkit` will be documented in this file.
 
+## v2.1.3 - 2026-10-06
+
+### Fixed
+
+- Assigning a subscriber from a plan's Assignments tab threw a Filament validation error (`getOptionLabelUsing` missing on the single-select).
+
 ## v2.1.2 - 2026-08-13
 
 ### Fixed
@@ -26,9 +32,10 @@ New Blade component that renders privately assigned plans for the authenticated 
 
   ```blade
   <x-subkit::personal-offers
-    :success-url="route('dashboard')"
-    claim-label="Activate Offer"
+  :success-url="route('dashboard')"
+  claim-label="Activate Offer"
 />
+
 
   ```
 Supports claim-label, success-url, provider, and theme props.
@@ -49,6 +56,7 @@ SubscriptionService::checkout() now returns a CheckoutResult value object instea
   $result = SubKit::checkout(...);
   $url = $result->url;
   $wasInstant = $result->directlySubscribed;
+
 
 ```
 **Tests**
