@@ -40,16 +40,14 @@ class AssignmentsRelationManager extends RelationManager
                         ->pluck($col, 'id')
                         ->toArray();
                 })
-                ->getOptionLabelsUsing(function (array $values): array {
+                ->getOptionLabelUsing(function ($value): ?string {
                     $model = config('subkit.billable_model');
                     if (! $model) {
-                        return [];
+                        return null;
                     }
                     $col = config('subkit.billable_search_column', 'email');
 
-                    return $model::whereIn('id', $values)
-                        ->pluck($col, 'id')
-                        ->toArray();
+                    return $model::find($value)?->{$col};
                 })
                 ->helperText('Search by email. Configure the model in config/subkit.php under billable_model.'),
         ]);
