@@ -8,5 +8,5 @@ SubKit (`karpovigorok/subkit`) orchestrates subscriptions on top of Laravel Cash
 - Features are for marketing display only; use Limits for enforcement.
 - Checkout metadata and Stripe Connect options come only from `SubKit::resolveCheckoutUsing()`, never from the request.
 - Top-ups are one-off purchases. SubKit stores no balance: grant credits by listening to `SubKit\Events\TopUpPurchased` and de-duplicate on `$event->reference`.
-- Blade components: `<x-subkit::pricing-table>`, `<x-subkit::manage-subscriptions>`, `<x-subkit::personal-offers>`, `<x-subkit::top-up>`, `<x-subkit::top-up-list>`.
+- Blade components: @verbatim`<x-subkit::pricing-table />`, `<x-subkit::manage-subscriptions />`, `<x-subkit::personal-offers />`, `<x-subkit::top-up />`, `<x-subkit::top-up-list />`@endverbatim.
 - Full docs: https://github.com/karpovigorok/subkit/tree/main/docs

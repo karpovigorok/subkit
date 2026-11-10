@@ -51,6 +51,9 @@ class TopUp extends Model
         });
     }
 
+    /**
+     * @return HasMany<TopUpProviderPrice, $this>
+     */
     public function providerPrices(): HasMany
     {
         return $this->hasMany(TopUpProviderPrice::class);
@@ -58,10 +61,13 @@ class TopUp extends Model
 
     public function providerPrice(string $provider): ?TopUpProviderPrice
     {
-        return $this->providerPrices()
+        /** @var TopUpProviderPrice|null $price */
+        $price = $this->providerPrices()
             ->where('provider', $provider)
             ->where('provider_price_id', '!=', '')
             ->first();
+
+        return $price;
     }
 
     /**
