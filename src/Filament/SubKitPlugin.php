@@ -8,6 +8,7 @@ use SubKit\Filament\Resources\FeatureResource;
 use SubKit\Filament\Resources\PlanResource;
 use SubKit\Filament\Resources\PlanSetResource;
 use SubKit\Filament\Resources\SubscriberResource;
+use SubKit\Filament\Resources\TopUpResource;
 
 class SubKitPlugin implements Plugin
 {
@@ -23,6 +24,7 @@ class SubKitPlugin implements Plugin
             PlanResource::class,
             PlanSetResource::class,
             FeatureResource::class,
+            TopUpResource::class,
         ]);
     }
 

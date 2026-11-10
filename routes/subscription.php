@@ -7,6 +7,7 @@ use SubKit\Http\Controllers\BillingPortalController;
 use SubKit\Http\Controllers\CheckoutRedirectController;
 use SubKit\Http\Controllers\ManageSubscriptionsController;
 use SubKit\Http\Controllers\PlanSetPreviewController;
+use SubKit\Http\Controllers\TopUpCheckoutController;
 
 // ─── Web: pricing table + manage-subscriptions component actions ──────────────
 Route::middleware(config('subkit.web.middleware', ['web']))
@@ -14,6 +15,9 @@ Route::middleware(config('subkit.web.middleware', ['web']))
     ->group(function () {
         Route::post('subkit/checkout', CheckoutRedirectController::class)
             ->name('checkout.redirect');
+
+        Route::post('subkit/top-ups/checkout', TopUpCheckoutController::class)
+            ->name('top-ups.checkout.redirect');
 
         Route::post('subkit/subscriptions/{id}/cancel', [ManageSubscriptionsController::class, 'cancel'])
             ->name('manage.cancel');
@@ -34,6 +38,9 @@ Route::middleware(config('subkit.api.middleware', ['api']))
     ->group(function () {
         Route::post('checkout', [CheckoutController::class, 'create'])
             ->name('checkout');
+
+        Route::post('top-ups/checkout', TopUpCheckoutController::class)
+            ->name('top-ups.checkout');
 
         Route::get('subscriptions/user', [SubscriptionController::class, 'forUser'])
             ->name('subscriptions.user');

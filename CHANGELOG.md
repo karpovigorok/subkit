@@ -2,6 +2,37 @@
 
 All notable changes to `subkit` will be documented in this file.
 
+## v3.0.0 - 2026-11-10
+
+### Added
+
+- **Checkout hook** (`SubKit::resolveCheckoutUsing()`): server-side way to attach `metadata`, Stripe Connect `transfer_data` and `application_fee_percent` to subscription checkouts. Values are validated against an allowlist and are never read from the request (ADR-002).
+- **Top-ups**: one-off checkout for a provider-neutral Top-up (`SubKit::topUpCheckout()`, `POST subkit/top-ups/checkout`, `POST api/subkit/top-ups/checkout`, new `subkit_top_ups` and `subkit_top_up_provider_prices` tables), managed in the Filament admin under Subscriptions → Top-ups. SubKit does not track balances (ADR-003).
+- **`<x-subkit::top-up code="...">` and `<x-subkit::top-up-list>`** Blade snippets (themeable: default, light, dark). The list is a radio group with one Buy button.
+- **`SubKit\Events\TopUpPurchased`**: provider-neutral event fired when a Top-up is paid, so hosts write one listener for every provider.
+- **`SubKit::resolveBillableUsing()`**: names the billable a request acts for when the client sends no `company_id` (the current team, a tenant, an account behind a custom authentication). Applies to checkout, Top-ups, the API subscription list and the cancel, resume and billing portal actions. Without it the authenticated user is the billable.
+- **Per-ability rules**: the `SubKit::authorizeBillableUsing()` callback also receives the ability (`checkout`, `top_up`, `view`, `cancel`, `resume`, `portal`), so a host can grant some actions and withhold others (for example team roles).
+
+### Documentation
+
+- New [Access control](docs/access-control.md) guide: policies for every SubKit model, a fail-closed `Gate::before`, and hiding records from non-admin users. Note for upgraders: the new Top-up models have no policy and are open in the admin until you add one.
+
+### Security
+
+- **Identity now comes from the authenticated user, never from request input.** `POST api/subkit/checkout` and `GET api/subkit/subscriptions/user` no longer accept `user_id`; the web checkout's `company_id` is authorized server-side instead of being used as the user ID. Cancel, resume and the billing portal now require authentication and check that the subscription's owner is the user, or a billable the host allows via `SubKit::authorizeBillableUsing()`. Previously any request could cancel, resume or open a billing portal for any subscription ID.
+
+### Breaking
+
+- REST API endpoints require authentication (add e.g. `auth:sanctum` to `subkit.api.middleware`). They act for the authenticated user and no longer accept `user_id`; remove it from your requests. To act for a Team or Company, send the optional `company_id` and register `SubKit::authorizeBillableUsing()`.
+- B2B apps using `company-id` must register `SubKit::authorizeBillableUsing()`; without it, `company_id` of another billable returns `403`.
+- Pricing-table/manage-subscriptions forms and the cancel/resume/portal routes return `401` for guests.
+
+### Changed
+
+- Webhook-driven events now resolve the billable from `subkit.billable_model` (falling back to the auth user model), so Team/Company billables receive subscription events too.
+- `SubscriptionService::checkout()` and `forUser()` also accept a billable model instead of an ID.
+- `PaymentProviderContract::createCheckoutSession()` takes a trailing `array $extras = []` and the contract gains `createTopUpCheckoutSession(Model $user, TopUp $topUp, string $priceId, ...)`. Custom providers must implement both.
+
 ## v2.1.3 - 2026-10-06
 
 ### Fixed

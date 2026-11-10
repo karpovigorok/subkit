@@ -20,6 +20,8 @@ class BillingPortalController extends Controller
             'return_url' => ['required', 'string'],
         ]);
 
+        $this->service->findAuthorizedSubscription($request, (int) $data['subscription_id'], SubscriptionService::ABILITY_PORTAL);
+
         $url = $this->service->billingPortal(
             subscriptionId: (int) $data['subscription_id'],
             returnUrl: $data['return_url'],

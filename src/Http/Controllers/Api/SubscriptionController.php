@@ -15,22 +15,28 @@ class SubscriptionController extends Controller
 
     public function forUser(Request $request): JsonResponse
     {
-        $request->validate(['user_id' => ['required', 'string']]);
+        $request->validate(['company_id' => ['nullable', 'string']]);
 
         return response()->json(
-            $this->service->forUser($request->input('user_id'))
+            $this->service->forUser(
+                $this->service->resolveBillable($request, $request->input('company_id'), SubscriptionService::ABILITY_VIEW)
+            )
         );
     }
 
     public function cancel(Request $request, int $id): JsonResponse
     {
+        $this->service->findAuthorizedSubscription($request, $id, SubscriptionService::ABILITY_CANCEL);
+
         $this->service->cancel($id, $request->boolean('immediately', false));
 
         return response()->json(['message' => 'Cancellation queued.']);
     }
 
-    public function resume(int $id): JsonResponse
+    public function resume(Request $request, int $id): JsonResponse
     {
+        $this->service->findAuthorizedSubscription($request, $id, SubscriptionService::ABILITY_RESUME);
+
         $this->service->resume($id);
 
         return response()->json(['message' => 'Subscription resumed.']);

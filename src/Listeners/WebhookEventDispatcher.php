@@ -2,10 +2,11 @@
 
 namespace SubKit\Listeners;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Events\WebhookReceived;
 use Laravel\Cashier\Subscription as CashierSubscription;
+use SubKit\Checkout\CheckoutOptions;
 use SubKit\Events\SubscriptionActivated;
 use SubKit\Events\SubscriptionCanceled;
 use SubKit\Events\SubscriptionCancelScheduled;
@@ -14,15 +15,40 @@ use SubKit\Events\SubscriptionPastDue;
 use SubKit\Events\SubscriptionPaused;
 use SubKit\Events\SubscriptionResumed;
 use SubKit\Events\SubscriptionTrialStarted;
+use SubKit\Events\TopUpPurchased;
+use SubKit\Models\TopUp;
 
 class WebhookEventDispatcher
 {
-    public function handle(WebhookHandled $event): void
+    /** Stripe events that can carry a paid Top-up (the async one covers delayed payment methods). */
+    private const TOP_UP_EVENTS = [
+        'checkout.session.completed',
+        'checkout.session.async_payment_succeeded',
+    ];
+
+    /**
+     * Cashier dispatches WebhookHandled only for event types it has its own handler for
+     * (subscriptions, invoices, ...). checkout.session.* has none, so Top-ups must be read from
+     * WebhookReceived, which Cashier dispatches for every event. Each type is therefore handled
+     * on exactly one of the two events, so nothing is dispatched twice.
+     */
+    public function handle(WebhookHandled|WebhookReceived $event): void
     {
         $payload = $event->payload;
+        $isTopUp = in_array($payload['type'] ?? '', self::TOP_UP_EVENTS, true);
+
+        if ($isTopUp !== ($event instanceof WebhookReceived)) {
+            return;
+        }
 
         $user = $this->resolveUser($payload);
         if (! $user) {
+            return;
+        }
+
+        if ($isTopUp) {
+            $this->handleTopUp($user, $payload);
+
             return;
         }
 
@@ -34,6 +60,36 @@ class WebhookEventDispatcher
             'customer.subscription.deleted' => SubscriptionCanceled::dispatch($user, $subscription, $payload),
             default => null,
         };
+    }
+
+    /**
+     * Turn a paid one-off Top-up checkout into the provider-neutral TopUpPurchased event.
+     */
+    private function handleTopUp(Model $user, array $payload): void
+    {
+        $session = $payload['data']['object'] ?? [];
+        $metadata = $session['metadata'] ?? [];
+        $code = $metadata['topup_code'] ?? null;
+
+        if (($metadata['subkit_kind'] ?? null) !== 'top-up'
+            || $code === null
+            || ($session['payment_status'] ?? null) !== 'paid') {
+            return;
+        }
+
+        $hostMetadata = array_diff_key($metadata, array_flip(CheckoutOptions::RESERVED_METADATA_KEYS));
+
+        TopUpPurchased::dispatch(
+            $user,
+            (string) $code,
+            TopUp::where('code', $code)->first(),
+            'stripe',
+            (string) ($session['id'] ?? ''),
+            $hostMetadata,
+            isset($session['amount_total']) ? (int) $session['amount_total'] : null,
+            isset($session['currency']) ? strtoupper((string) $session['currency']) : null,
+            $payload,
+        );
     }
 
     private function handleCreated(Model $user, ?CashierSubscription $subscription, array $payload): void
@@ -83,7 +139,9 @@ class WebhookEventDispatcher
             return null;
         }
 
-        $userModel = config('auth.providers.users.model', User::class);
+        // Same billable model SubscriptionService uses, so Team/Company billables resolve too.
+        $userModel = config('subkit.billable_model')
+            ?? config('auth.providers.users.model');
 
         return $userModel::where('stripe_id', $stripeCustomerId)->first();
     }

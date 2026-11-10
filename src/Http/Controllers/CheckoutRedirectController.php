@@ -19,8 +19,6 @@ class CheckoutRedirectController extends Controller
      */
     public function __invoke(Request $request): RedirectResponse
     {
-        abort_unless($request->user(), 401);
-
         $data = $request->validate([
             'plan_code' => ['required', 'string'],
             'company_id' => ['nullable', 'string'],
@@ -29,9 +27,13 @@ class CheckoutRedirectController extends Controller
             'provider' => ['sometimes', 'string'],
         ]);
 
+        // company_id only NAMES a billable; whether this user may act for it is decided server-side
+        // (the request's billable by default, or the host's SubKit::authorizeBillableUsing() rule).
+        $billable = $this->service->resolveBillable($request, $data['company_id'] ?? null, SubscriptionService::ABILITY_CHECKOUT);
+
         $result = $this->service->checkout(
             planCode: $data['plan_code'],
-            userId: $data['company_id'] ?? (string) $request->user()->id,
+            userId: $billable,
             successUrl: $data['success_url'],
             cancelUrl: $data['cancel_url'],
             provider: $data['provider'] ?? 'stripe',

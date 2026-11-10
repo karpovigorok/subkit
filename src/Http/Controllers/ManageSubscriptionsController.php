@@ -15,13 +15,17 @@ class ManageSubscriptionsController extends Controller
 
     public function cancel(Request $request, int $id): RedirectResponse
     {
+        $this->service->findAuthorizedSubscription($request, $id, SubscriptionService::ABILITY_CANCEL);
+
         $this->service->cancel($id, $request->boolean('immediately', false));
 
         return redirect()->back();
     }
 
-    public function resume(int $id): RedirectResponse
+    public function resume(Request $request, int $id): RedirectResponse
     {
+        $this->service->findAuthorizedSubscription($request, $id, SubscriptionService::ABILITY_RESUME);
+
         $this->service->resume($id);
 
         return redirect()->back();

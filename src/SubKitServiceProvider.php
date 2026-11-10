@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Events\WebhookHandled;
+use Laravel\Cashier\Events\WebhookReceived;
 use SubKit\Listeners\FlushCapabilitiesCacheOnWebhook;
 use SubKit\Listeners\WebhookEventDispatcher;
 use SubKit\Services\ProviderRegistry;
@@ -79,6 +80,7 @@ class SubKitServiceProvider extends ServiceProvider
         Blade::componentNamespace('SubKit\\View\\Components', 'subkit');
 
         Event::listen(WebhookHandled::class, WebhookEventDispatcher::class);
+        Event::listen(WebhookReceived::class, WebhookEventDispatcher::class); // Top-ups: Cashier has no checkout.session handler
 
         if (config('subkit.billable_model')) {
             Event::listen(WebhookHandled::class, FlushCapabilitiesCacheOnWebhook::class);

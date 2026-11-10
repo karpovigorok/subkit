@@ -17,7 +17,7 @@ class CheckoutController extends Controller
     {
         $data = $request->validate([
             'plan_code' => ['required', 'string'],
-            'user_id' => ['required', 'string'],
+            'company_id' => ['nullable', 'string'],
             'success_url' => ['required', 'string'],
             'cancel_url' => ['required', 'string'],
             'provider' => ['sometimes', 'string'],
@@ -25,7 +25,7 @@ class CheckoutController extends Controller
 
         $result = $this->service->checkout(
             planCode: $data['plan_code'],
-            userId: $data['user_id'],
+            userId: $this->service->resolveBillable($request, $data['company_id'] ?? null, SubscriptionService::ABILITY_CHECKOUT),
             successUrl: $data['success_url'],
             cancelUrl: $data['cancel_url'],
             provider: $data['provider'] ?? 'stripe',
