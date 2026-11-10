@@ -18,10 +18,13 @@ While Laravel Cashier is incredibly powerful, building the actual UI and admin p
 ## What it does
 
 - Integrates with Stripe via Laravel Cashier (webhooks, checkout sessions, billing portal)
-- Provides a Filament admin panel to manage Plans, Plan Sets, Provider Prices, Features, and Limits
-- Provides Blade components: a pricing table and a subscription management UI, with multiple themes
+- Provides a Filament admin panel to manage Plans, Plan Sets, Provider Prices, Features, Limits, and Top-ups
+- Provides Blade components: a pricing table, a subscription management UI, personal offers, and Top-up snippets, with multiple themes
 - Exposes a PHP facade and REST API for subscription operations (checkout, cancel, resume, billing portal)
 - Exposes runtime plan limits (e.g. `max_locations`, `max_users`) via a `HasCapabilities` trait with built-in caching
+- Supports private plans assigned to specific users, and free ($0) plans that activate without Stripe Checkout
+- Sells one-off Top-ups (credit packs, consumables) through the provider's hosted checkout and fires a `TopUpPurchased` event
+- Lets you attach metadata and Stripe Connect options (`transfer_data`, `application_fee_percent`) to checkouts through a server-side checkout hook
 
 ## Live Demo
 
@@ -35,6 +38,7 @@ Try it in action: **[subkit.noxls.net](https://subkit.noxls.net)**
 - Process payments or store card data
 - Replace Stripe or Laravel Cashier — it orchestrates on top of them
 - Handle invoicing, taxes, or compliance
+- Track balances or credits for Top-ups (your app owns the balance)
 - Manage user authentication or access control (your app's policies decide who may use the admin, see [Access control](https://subkit.noxls.net/docs/access-control))
 
 ---
@@ -82,7 +86,7 @@ Full docs: **[subkit.noxls.net/docs](https://subkit.noxls.net/docs)** (Markdown 
 | [Checkout hook](https://subkit.noxls.net/docs/checkout-hook) | [Top-ups](https://subkit.noxls.net/docs/top-ups) |
 | [Access control](https://subkit.noxls.net/docs/access-control) | [Themes](https://subkit.noxls.net/docs/themes) |
 | [REST API](https://subkit.noxls.net/docs/api) | [Events](https://subkit.noxls.net/docs/events) |
-| [Upgrading](UPGRADING.md) | [Changelog](CHANGELOG.md) |
+| [Upgrading](https://subkit.noxls.net/docs/upgrading) | [Changelog](CHANGELOG.md) |
 
 ## Testing
 

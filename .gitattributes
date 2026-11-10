@@ -1,13 +1,12 @@
 # Path-based git attributes
 # https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
 
-# Ignore all test and documentation with "export-ignore".
+# Ignore tests and dev tooling with "export-ignore". docs/ ships with the package.
 /.github            export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /phpunit.xml.dist   export-ignore
 /art                export-ignore
-/docs               export-ignore
 /tests              export-ignore
 /workbench          export-ignore
 /.editorconfig      export-ignore
@@ -15,6 +14,5 @@
 /psalm.xml          export-ignore
 /psalm.xml.dist     export-ignore
 /testbench.yaml     export-ignore
-/UPGRADING.md       export-ignore
 /phpstan.neon.dist  export-ignore
 /phpstan-baseline.neon  export-ignore

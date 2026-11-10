@@ -2,6 +2,13 @@
 
 All notable changes to `subkit` will be documented in this file.
 
+## v3.0.1 - 2026-11-10
+
+### Documentation
+
+- The `docs/` folder now ships with the package and is tracked in the repository, so the guides are available on GitHub and in `vendor/karpovigorok/subkit/docs` (for editors and AI agents).
+- `UPGRADING.md` moved to [`docs/upgrading.md`](docs/upgrading.md).
+
 ## v3.0.0 - 2026-11-10
 
 ### Added
